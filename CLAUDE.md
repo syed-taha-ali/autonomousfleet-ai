@@ -36,6 +36,15 @@ rewritten with plain REP-105 frames, `af_bringup/robot.launch.py` composes HAL
 **Repository**: `autonomousfleet-ai`
 **Note**: `I am the only author of this project, claude should not appear anywhere.`
 
+**Authorship framing for commits, PRs, issues, and code comments**:
+Write everything in the first person as the author's own work. Do **not**
+reference the inspiration project, "Jazzy→Humble fixes", "ported from", or
+similar framing that implies this work is derivative. If a file genuinely
+originates from a third party that allows reuse, include a proper attribution
+header in the file itself (source, license, upstream URL) — that is the only
+place provenance appears. PR titles/bodies and commit messages describe *what
+the change does*, not where the ideas came from.
+
 **Per-phase workflow** (run after each plan phase is successfully implemented and tested):
 1. `git checkout -b phase-<N>-<short-name>` from `main`
 2. Commit phase work to the branch

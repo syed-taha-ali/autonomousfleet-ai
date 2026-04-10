@@ -2,6 +2,7 @@
 inspo_project/
 robot_docs/
 project_spc.pdf
+setup/
 
 # ROS2 / colcon
 build/
