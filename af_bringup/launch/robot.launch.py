@@ -61,6 +61,13 @@ def generate_launch_description():
         remappings=[('odometry/filtered', '/odom')],
     )
 
+    lidar_frame_bridge = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='lidar_frame_bridge',
+        arguments=['0', '0', '0', '0', '0', '0', 'lidar_frame', 'laser_frame'],
+    )
+
     usb_cam = Node(
         package='usb_cam',
         executable='usb_cam_node_exe',
@@ -83,5 +90,6 @@ def generate_launch_description():
         hal_launch,
         imu_filter,
         ekf,
+        lidar_frame_bridge,
         usb_cam,
     ])
