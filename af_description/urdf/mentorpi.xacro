@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Top-level robot description for the MentorPi M1 (mecanum variant only).
+  Unlike the inspo project we hard-code the mecanum include: M1 has no
+  Ackermann variant in this project, so the MACHINE_TYPE env-var gate has
+  been removed.
+-->
+<robot name="mentorpi_m1" xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:include filename="$(find af_description)/urdf/mecanum.xacro"/>
+    <xacro:include filename="$(find af_description)/urdf/inertial_matrix.xacro" />
+</robot>

@@ -1,0 +1,4 @@
+af_msgs/MissionCommand command
+---
+bool valid
+string rejection_reason

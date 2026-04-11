@@ -1,0 +1,4 @@
+af_msgs/GetBusServoCmd[] cmd
+---
+bool success
+af_msgs/BusServoState[] state

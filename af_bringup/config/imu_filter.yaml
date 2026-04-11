@@ -1,0 +1,10 @@
+complementary_filter_gain_node:
+  ros__parameters:
+    use_mag: false
+    publish_tf: false
+    publish_debug_topics: false
+    gain_acc: 0.01
+    gain_mag: 0.01
+    do_bias_estimation: true
+    do_adaptive_gain: true
+    fixed_frame: odom
