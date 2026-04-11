@@ -3,15 +3,15 @@
 """
 Hardware watchdog: battery, controller heartbeat, diagnostic aggregation.
 
-- Subscribes to ``/ros_robot_controller/battery`` (std_msgs/UInt16 in cV,
-  per the HiWonder SDK: 1205 = 12.05 V).
+- Subscribes to ``/ros_robot_controller/battery`` (std_msgs/UInt16 in mV;
+  e.g. 8040 -> 8.04 V on a 2S pack).
 - Publishes ``/diagnostics`` (``diagnostic_msgs/DiagnosticArray``) at 1 Hz.
 - Heartbeat: if no battery message is received for ``heartbeat_timeout``
   seconds, reports an ERROR so downstream consumers (e.g. mission_manager)
   can refuse to start new missions.
-- Battery thresholds:
-    * WARN  when voltage < ``warn_voltage``  (default 10.8 V)
-    * ERROR when voltage < ``error_voltage`` (default 10.2 V)
+- Battery thresholds (2S Li-ion defaults; override via parameters for 3S):
+    * WARN  when voltage < ``warn_voltage``  (default 6.8 V)
+    * ERROR when voltage < ``error_voltage`` (default 6.4 V)
   Trigger a single log warning/error on each transition.
 """
 import time
@@ -27,8 +27,8 @@ class HardwareWatchdog(Node):
         super().__init__('hardware_watchdog')
 
         self.declare_parameter('battery_topic', '/ros_robot_controller/battery')
-        self.declare_parameter('warn_voltage', 10.8)
-        self.declare_parameter('error_voltage', 10.2)
+        self.declare_parameter('warn_voltage', 6.8)
+        self.declare_parameter('error_voltage', 6.4)
         self.declare_parameter('heartbeat_timeout', 3.0)
         self.declare_parameter('publish_rate', 1.0)
 
@@ -54,8 +54,8 @@ class HardwareWatchdog(Node):
         self.get_logger().info('hardware_watchdog started')
 
     def _on_battery(self, msg: UInt16):
-        # HiWonder SDK reports centivolts (e.g. 1205 -> 12.05 V).
-        self.last_voltage = msg.data / 100.0
+        # RRC Lite firmware reports millivolts (e.g. 8040 -> 8.04 V on a 2S pack).
+        self.last_voltage = msg.data / 1000.0
         self.last_battery_time = time.monotonic()
 
     def _classify(self):
