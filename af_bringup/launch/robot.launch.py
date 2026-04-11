@@ -6,8 +6,7 @@ Composes:
   - af_description/description.launch.py  (robot_state_publisher + URDF)
   - af_hal/af_hal.launch.py                (STM32 bridge, odom, imu_calib, watchdog)
   - imu_complementary_filter              (/imu_corrected -> /imu)
-  - rf2o_laser_odometry                   (/scan -> /odom_rf2o)
-  - robot_localization ekf_filter_node    (fuses odom_raw + odom_rf2o + imu -> /odom)
+  - robot_localization ekf_filter_node    (fuses odom_raw + imu -> /odom)
   - usb_cam                               (compressed stream for Dev PC perception)
 
 NOT included (run separately):
@@ -53,22 +52,6 @@ def generate_launch_description():
         ],
     )
 
-    rf2o = Node(
-        package='rf2o_laser_odometry',
-        executable='rf2o_laser_odometry_node',
-        name='rf2o_laser_odometry',
-        output='screen',
-        parameters=[{
-            'laser_scan_topic': '/scan',
-            'odom_topic': '/odom_rf2o',
-            'publish_tf': False,
-            'base_frame_id': 'base_footprint',
-            'odom_frame_id': 'odom',
-            'init_pose_from_topic': '',
-            'freq': 20.0,
-        }],
-    )
-
     ekf = Node(
         package='robot_localization',
         executable='ekf_node',
@@ -99,7 +82,6 @@ def generate_launch_description():
         description_launch,
         hal_launch,
         imu_filter,
-        rf2o,
         ekf,
         usb_cam,
     ])

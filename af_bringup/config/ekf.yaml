@@ -1,9 +1,8 @@
 ### robot_localization EKF for AutonomousFleet AI (MentorPi M1 mecanum)
-# Three input sources:
+# Input sources:
 #   odom0 = /odom_raw       (body-frame vx, vy, vyaw from mecanum IK)
-#   odom1 = /odom_rf2o      (x, y, yaw from rf2o_laser_odometry)
 #   imu0  = /imu            (yaw + vyaw from imu_complementary_filter)
-# Frame names are plain REP-105 (no `namespace/` prefix hack from the inspo).
+# Frame names are plain REP-105.
 ekf_filter_node:
   ros__parameters:
     frequency: 50.0
@@ -32,17 +31,6 @@ ekf_filter_node:
     odom0_differential: false
     odom0_relative: false
     odom0_nodelay: false
-
-    odom1: /odom_rf2o
-    odom1_config: [true,  true,  false,
-                   false, false, true,
-                   false, false, false,
-                   false, false, false,
-                   false, false, false]
-    odom1_queue_size: 4
-    odom1_differential: false
-    odom1_relative: true
-    odom1_nodelay: false
 
     imu0: /imu
     imu0_config: [false, false, false,
