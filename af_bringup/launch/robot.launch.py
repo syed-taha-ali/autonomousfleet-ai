@@ -71,7 +71,7 @@ def generate_launch_description():
             'image_width': 640,
             'image_height': 480,
             'framerate': 15.0,
-            'pixel_format': 'yuyv2rgb',
+            'pixel_format': 'yuyv',
             'camera_frame_id': 'camera_link',
             'camera_name': 'mentorpi_cam',
         }],
