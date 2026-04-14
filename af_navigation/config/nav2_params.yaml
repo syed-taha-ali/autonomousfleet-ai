@@ -1,0 +1,325 @@
+# Nav2 parameters for AutonomousFleet AI on MentorPi M1 (Raspberry Pi 5, 4 GB).
+#
+# Robot: holonomic mecanum, footprint ~24 cm x 20 cm, circumscribed radius ~0.12 m.
+# Sensors: MS200 LiDAR on /scan, wheel+IMU fused odom on /odom (base_footprint -> map).
+# Optional second obstacle source: /vision_obstacles (sensor_msgs/PointCloud2)
+# produced by the Dev-PC perception stack (af_perception, Phase 4). The local
+# costmap is already wired for it; it is clearing=false until the topic is live.
+#
+# Conservative speeds by default (max 0.2 m/s). Raise gradually only once DWB
+# tracks the plan cleanly.
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: false
+    global_frame: map
+    robot_base_frame: base_footprint
+    odom_topic: /odom
+    bt_loop_duration: 10
+    default_server_timeout: 20
+    # Point these at the custom tree shipped with af_navigation. They are filled
+    # in by the launch file via parameter overlay so the package-share path
+    # resolves at runtime.
+    default_nav_to_pose_bt_xml: ""
+    default_nav_through_poses_bt_xml: ""
+    plugin_lib_names:
+      - nav2_compute_path_to_pose_action_bt_node
+      - nav2_compute_path_through_poses_action_bt_node
+      - nav2_smooth_path_action_bt_node
+      - nav2_follow_path_action_bt_node
+      - nav2_spin_action_bt_node
+      - nav2_wait_action_bt_node
+      - nav2_back_up_action_bt_node
+      - nav2_drive_on_heading_bt_node
+      - nav2_clear_costmap_service_bt_node
+      - nav2_is_stuck_condition_bt_node
+      - nav2_goal_reached_condition_bt_node
+      - nav2_goal_updated_condition_bt_node
+      - nav2_globally_updated_goal_condition_bt_node
+      - nav2_is_path_valid_condition_bt_node
+      - nav2_initial_pose_received_condition_bt_node
+      - nav2_reinitialize_global_localization_service_bt_node
+      - nav2_rate_controller_bt_node
+      - nav2_distance_controller_bt_node
+      - nav2_speed_controller_bt_node
+      - nav2_truncate_path_action_bt_node
+      - nav2_truncate_path_local_action_bt_node
+      - nav2_goal_updater_node_bt_node
+      - nav2_recovery_node_bt_node
+      - nav2_pipeline_sequence_bt_node
+      - nav2_round_robin_node_bt_node
+      - nav2_transform_available_condition_bt_node
+      - nav2_time_expired_condition_bt_node
+      - nav2_path_expiring_timer_condition
+      - nav2_distance_traveled_condition_bt_node
+      - nav2_single_trigger_bt_node
+      - nav2_is_battery_low_condition_bt_node
+      - nav2_navigate_through_poses_action_bt_node
+      - nav2_navigate_to_pose_action_bt_node
+      - nav2_remove_passed_goals_action_bt_node
+      - nav2_planner_selector_bt_node
+      - nav2_controller_selector_bt_node
+      - nav2_goal_checker_selector_bt_node
+
+controller_server:
+  ros__parameters:
+    use_sim_time: false
+    controller_frequency: 10.0           # Hz; Pi 5 has headroom at 10 Hz.
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.001
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.3
+    progress_checker_plugin: progress_checker
+    goal_checker_plugins: [general_goal_checker]
+    controller_plugins: [FollowPath]
+
+    progress_checker:
+      plugin: nav2_controller::SimpleProgressChecker
+      required_movement_radius: 0.5
+      movement_time_allowance: 10.0
+
+    general_goal_checker:
+      plugin: nav2_controller::SimpleGoalChecker
+      xy_goal_tolerance: 0.10           # 10 cm — matches acceptance test
+      yaw_goal_tolerance: 0.15           # ~8.5 deg
+      stateful: true
+
+    FollowPath:
+      plugin: dwb_core::DWBLocalPlanner
+      debug_trajectory_details: false
+      # Holonomic kinematics. Mecanum allows lateral motion — keep y limits live.
+      min_vel_x: -0.15
+      max_vel_x: 0.20
+      min_vel_y: -0.15
+      max_vel_y: 0.15
+      max_vel_theta: 1.0
+      min_speed_xy: 0.0
+      max_speed_xy: 0.22
+      min_speed_theta: 0.0
+      acc_lim_x: 1.0
+      acc_lim_y: 1.0
+      acc_lim_theta: 2.0
+      decel_lim_x: -1.0
+      decel_lim_y: -1.0
+      decel_lim_theta: -2.0
+      # Trajectory sampler — holonomic enables vy samples. Bump vy_samples so
+      # lateral candidates actually appear in the search space; DWB's critic
+      # scoring cannot pick a sideways trajectory that it never sampled.
+      vx_samples: 10
+      vy_samples: 15
+      vtheta_samples: 15
+      sim_time: 1.5
+      linear_granularity: 0.05
+      angular_granularity: 0.025
+      transform_tolerance: 0.2
+      xy_goal_tolerance: 0.10
+      trans_stopped_velocity: 0.05
+      short_circuit_trajectory_evaluation: true
+      stateful: true
+      # Critic set tuned for holonomic mecanum: we intentionally OMIT
+      # RotateToGoal/PathAlign/GoalAlign because those reward heading alignment
+      # with the path, which pushes the planner toward spin-then-drive instead
+      # of driving sideways. Distance critics dominate so the scorer picks the
+      # trajectory that gets closest to path+goal regardless of heading.
+      critics:
+        - Oscillation
+        - ObstacleFootprint
+        - PathDist
+        - GoalDist
+      Oscillation.scale: 1.0
+      ObstacleFootprint.scale: 0.02
+      PathDist.scale: 32.0
+      GoalDist.scale: 32.0
+
+planner_server:
+  ros__parameters:
+    use_sim_time: false
+    expected_planner_frequency: 1.0
+    planner_plugins: [GridBased]
+    GridBased:
+      plugin: nav2_smac_planner/SmacPlanner2D
+      tolerance: 0.125
+      downsample_costmap: false
+      downsampling_factor: 1
+      allow_unknown: true
+      max_iterations: 1000000
+      max_on_approach_iterations: 1000
+      max_planning_time: 2.0
+      motion_model_for_search: MOORE      # 8-connected — natural for holonomic
+      cost_travel_multiplier: 2.0
+      use_final_approach_orientation: false
+      smoother:
+        max_iterations: 1000
+        w_smooth: 0.3
+        w_data: 0.2
+        tolerance: 1.0e-10
+
+smoother_server:
+  ros__parameters:
+    use_sim_time: false
+    smoother_plugins: [simple_smoother]
+    simple_smoother:
+      plugin: nav2_smoother::SimpleSmoother
+      tolerance: 1.0e-10
+      max_its: 1000
+      do_refinement: true
+
+behavior_server:
+  ros__parameters:
+    use_sim_time: false
+    local_costmap_topic: local_costmap/costmap_raw
+    global_costmap_topic: global_costmap/costmap_raw
+    local_footprint_topic: local_costmap/published_footprint
+    global_footprint_topic: global_costmap/published_footprint
+    cycle_frequency: 10.0
+    behavior_plugins: [spin, backup, drive_on_heading, wait]
+    spin:
+      plugin: nav2_behaviors/Spin
+    backup:
+      plugin: nav2_behaviors/BackUp
+    drive_on_heading:
+      plugin: nav2_behaviors/DriveOnHeading
+    wait:
+      plugin: nav2_behaviors/Wait
+    global_frame: odom
+    robot_base_frame: base_footprint
+    transform_tolerance: 0.2
+    simulate_ahead_time: 2.0
+    max_rotational_vel: 0.8
+    min_rotational_vel: 0.2
+    rotational_acc_lim: 2.0
+
+waypoint_follower:
+  ros__parameters:
+    use_sim_time: false
+    loop_rate: 20
+    stop_on_failure: false
+    waypoint_task_executor_plugin: wait_at_waypoint
+    wait_at_waypoint:
+      plugin: nav2_waypoint_follower::WaitAtWaypoint
+      enabled: true
+      waypoint_pause_duration: 1000      # ms
+
+velocity_smoother:
+  ros__parameters:
+    use_sim_time: false
+    smoothing_frequency: 20.0
+    scale_velocities: false
+    feedback: OPEN_LOOP
+    # Limits match FollowPath so the smoother never undercuts the planner.
+    max_velocity: [0.20, 0.15, 1.0]
+    min_velocity: [-0.15, -0.15, -1.0]
+    max_accel: [1.0, 1.0, 2.0]
+    max_decel: [-1.0, -1.0, -2.0]
+    odom_topic: /odom
+    odom_duration: 0.1
+    deadband_velocity: [0.0, 0.0, 0.0]
+    velocity_timeout: 1.0
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      use_sim_time: false
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      global_frame: map
+      robot_base_frame: base_footprint
+      robot_radius: 0.12
+      resolution: 0.05
+      track_unknown_space: true
+      plugins: [static_layer, obstacle_layer, inflation_layer]
+      static_layer:
+        plugin: nav2_costmap_2d::StaticLayer
+        map_subscribe_transient_local: true
+      obstacle_layer:
+        plugin: nav2_costmap_2d::ObstacleLayer
+        enabled: true
+        observation_sources: scan
+        scan:
+          topic: /scan
+          sensor_frame: lidar_frame
+          data_type: LaserScan
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          clearing: true
+          marking: true
+          raytrace_max_range: 10.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 8.0
+          obstacle_min_range: 0.0
+          inf_is_valid: false
+      inflation_layer:
+        plugin: nav2_costmap_2d::InflationLayer
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.15
+      always_send_full_costmap: true
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: false
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      global_frame: odom
+      robot_base_frame: base_footprint
+      rolling_window: true
+      width: 3
+      height: 3
+      resolution: 0.03                 # 3 cm — finer than global for local planning
+      robot_radius: 0.12
+      plugins: [obstacle_layer, inflation_layer]
+      obstacle_layer:
+        plugin: nav2_costmap_2d::ObstacleLayer
+        enabled: true
+        # `vision` is the Phase-4 hook. Until af_perception publishes
+        # /vision_obstacles, the layer simply sees no marks on that source —
+        # LiDAR continues to clear & mark normally (graceful degradation).
+        observation_sources: scan vision
+        scan:
+          topic: /scan
+          sensor_frame: lidar_frame
+          data_type: LaserScan
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.0
+          clearing: true
+          marking: true
+          raytrace_max_range: 10.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 8.0
+          obstacle_min_range: 0.0
+          inf_is_valid: false
+        vision:
+          topic: /vision_obstacles
+          data_type: PointCloud2
+          marking: true
+          clearing: false              # keep LiDAR as the authoritative clearer
+          max_obstacle_height: 2.0
+          min_obstacle_height: 0.05
+          obstacle_max_range: 5.0
+          obstacle_min_range: 0.2
+          observation_persistence: 2.0
+      inflation_layer:
+        plugin: nav2_costmap_2d::InflationLayer
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.15
+      always_send_full_costmap: true
+
+# Lifecycle manager brings up all Nav2 servers in dependency order.
+# `map_server` and `amcl` are owned by af_slam's localisation launch; this
+# manager deliberately does not list them so the two stacks stay independent
+# and can be brought up or shut down separately.
+lifecycle_manager_navigation:
+  ros__parameters:
+    use_sim_time: false
+    autostart: true
+    bond_timeout: 4.0
+    attempt_respawn_reconnection: true
+    bond_respawn_max_duration: 10.0
+    node_names:
+      - controller_server
+      - smoother_server
+      - planner_server
+      - behavior_server
+      - bt_navigator
+      - waypoint_follower
+      - velocity_smoother

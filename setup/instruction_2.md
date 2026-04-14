@@ -32,15 +32,19 @@ ros2 launch af_bringup slam.launch.py mode:=localization \
 - Either `af_slam/launch/slam_mapping.launch.py` **or**
   `af_slam/launch/slam_localization.launch.py`
 
-The factory `oradar_lidar` package lives in `/home/ubuntu/ros2_ws/install/`,
-not our overlay, so source it first:
+The factory `oradar_lidar` package lives in
+`/home/ubuntu/third_party_ros2/third_party_ws/install/`, not our overlay, so
+source it first. Use `local_setup.bash` (not `setup.bash`) when layering — the
+plain `setup.bash` rewrites the prefix chain and drops whichever overlay was
+sourced before it:
 
 ```bash
-source /home/ubuntu/ros2_ws/install/setup.bash
-source /home/ubuntu/workspace/ros2_ws/install/setup.bash
+source /opt/ros/humble/setup.bash
+source /home/ubuntu/third_party_ros2/third_party_ws/install/local_setup.bash
+source /home/ubuntu/workspace/ros2_ws/install/local_setup.bash
 ```
 
-Add those two lines to `~/.bashrc` to make every `docker exec` shell work
+Add those three lines to `~/.bashrc` to make every `docker exec` shell work
 without the dance.
 
 ## 2. Why `scan_sanitizer_node` is mandatory
@@ -159,7 +163,7 @@ on `slam.launch.py` and run your own.
 | `/scan` hz is 20 Hz, readings wildly variable (13–396) | Two MS200 driver instances fighting `/dev/ldlidar` | `bash /tmp/af_kill.sh` (the script form of the Phase 1 kill list) before every `ros2 launch` |
 | AMCL converges to wrong symmetric pose (e.g., 180° off) | Initial pose too far off in a square room | Click **2D Pose Estimate** again with a better guess, drive a short distance |
 | `Invalid frame ID "map" passed to canTransform` when running `tf2_echo map odom` | AMCL or slam_toolbox not publishing the `map → odom` TF yet | Wait 2–3 s after launch; if it persists, check for rejected-scan errors (fix above) |
-| `ros2 launch af_bringup slam.launch.py` fails with `Package 'oradar_lidar' not found` | Factory overlay not sourced | `source /home/ubuntu/ros2_ws/install/setup.bash` before the launch (add to `~/.bashrc`) |
+| `ros2 launch af_bringup slam.launch.py` fails with `Package 'oradar_lidar' not found` | Factory overlay not sourced | `source /home/ubuntu/third_party_ros2/third_party_ws/install/local_setup.bash` before the launch (add to `~/.bashrc` along with the workspace overlay) |
 
 ## 7. Reporting back
 
