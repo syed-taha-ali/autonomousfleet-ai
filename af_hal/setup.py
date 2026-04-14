@@ -27,6 +27,7 @@ setup(
             'odom_publisher_node = af_hal.odom_publisher_node:main',
             'imu_calib_node = af_hal.imu_calib_node:main',
             'hardware_watchdog_node = af_hal.hardware_watchdog_node:main',
+            'scan_sanitizer_node = af_hal.scan_sanitizer_node:main',
         ],
     },
 )

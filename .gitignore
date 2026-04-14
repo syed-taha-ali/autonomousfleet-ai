@@ -3,6 +3,8 @@ inspo_project/
 robot_docs/
 project_spc.pdf
 CLAUDE.md
+models.md
+report/
 
 # ROS2 / colcon
 build/
