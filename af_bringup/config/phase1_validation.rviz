@@ -79,7 +79,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /image_raw
+        Value: /camera/image_raw
       Transport Hint: raw
       Max Value: 1
       Min Value: 0

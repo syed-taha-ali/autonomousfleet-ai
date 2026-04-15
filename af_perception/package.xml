@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>af_perception</name>
+  <version>0.1.0</version>
+  <description>
+    AutonomousFleet AI distributed perception pipeline. Runs on the Dev PC (GPU),
+    consumes compressed camera streams from the Pi over WiFi, runs YOLO object
+    detection, back-projects detections to 3D, and publishes a PointCloud2 the
+    stock Nav2 ObstacleLayer consumes as a second observation source.
+  </description>
+  <maintainer email="nbstaha@gmail.com">Syed Taha Ali</maintainer>
+  <license>MIT</license>
+
+  <depend>rclpy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>vision_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>message_filters</depend>
+
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

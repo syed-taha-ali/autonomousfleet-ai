@@ -68,6 +68,14 @@ def generate_launch_description():
         arguments=['0', '0', '0', '0', '0', '0', 'lidar_frame', 'laser_frame'],
     )
 
+    camera_info_url = PathJoinSubstitution([
+        FindPackageShare('af_bringup'), 'config', 'camera_info.yaml'
+    ])
+    # image_transport auto-publishes /camera/image_raw/compressed and
+    # /camera/image_raw/compressedDepth companions when the matching plugins
+    # are installed (ros-humble-compressed-image-transport, already pulled in
+    # by usb_cam). The Dev-PC perception stack subscribes to the compressed
+    # topic to keep WiFi bandwidth at 2-4 Mbps.
     usb_cam = Node(
         package='usb_cam',
         executable='usb_cam_node_exe',
@@ -79,9 +87,21 @@ def generate_launch_description():
             'image_height': 480,
             'framerate': 15.0,
             'pixel_format': 'yuyv',
-            'camera_frame_id': 'camera_link',
+            # `frame_id` is the correct param in usb_cam 0.6+; the URDF
+            # already publishes a `depth_cam` frame rigidly attached to
+            # base_link, so we reuse it for the USB camera too (the depth
+            # and RGB sensors are colocated on the MentorPi front plate).
+            'frame_id': 'depth_cam',
             'camera_name': 'mentorpi_cam',
+            'camera_info_url': ['file://', camera_info_url],
         }],
+        remappings=[
+            ('image_raw', '/camera/image_raw'),
+            ('image_raw/compressed', '/camera/image_raw/compressed'),
+            ('image_raw/compressedDepth', '/camera/image_raw/compressedDepth'),
+            ('image_raw/theora', '/camera/image_raw/theora'),
+            ('camera_info', '/camera/camera_info'),
+        ],
     )
 
     return LaunchDescription([

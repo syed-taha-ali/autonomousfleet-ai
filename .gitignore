@@ -19,6 +19,11 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 
+# ML model weights (downloaded on first run, not source)
+*.pt
+*.onnx
+*.engine
+
 # Editor
 .vscode/
 .idea/
