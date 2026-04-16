@@ -1,7 +1,7 @@
-# Status feedback emitted by mission_manager_node
 string mission_id
-string state            # idle | planning | executing | paused | completed | failed
+string state            # idle | exploring | target_confirmed | approaching | returning | done | failed
 string current_action
-float32 progress        # 0.0 - 1.0
+geometry_msgs/PoseStamped home_pose
+float32 distance_travelled_m
+float32 elapsed_s
 string error_message
-builtin_interfaces/Time stamp

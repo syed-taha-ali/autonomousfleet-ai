@@ -20,7 +20,7 @@ yolo_onnx_node:
     confidence_threshold: 0.35
     iou_threshold: 0.45
     num_threads: 1
-    process_every_n: 3
+    process_every_n: 6
     input_topic: /camera/image_raw
     detections_topic: /detections
     # Integer class-index filter. Omitted/empty/negative = all COCO classes.
