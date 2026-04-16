@@ -133,6 +133,13 @@ def _launch_setup(context):
             executable='simple_explore_node',
             name='simple_explore',
             output='screen',
+            parameters=[{
+                'max_explore_time_s': LaunchConfiguration('explore_time_s'),
+                'max_explore_distance_m': LaunchConfiguration('explore_distance_m'),
+                'stop_on_detection': LaunchConfiguration('explore_stop_on_detection'),
+                'target_class': target_class,
+                'detection_confidence_min': 0.5,
+            }],
         )
         entities.append(TimerAction(period=25.0, actions=[simple_explore]))
 
@@ -152,5 +159,11 @@ def generate_launch_description():
                               description='Start the frontier explorer (staggered to t=25 s).'),
         DeclareLaunchArgument('target_class', default_value='suitcase',
                               description='COCO class name to search for.'),
+        DeclareLaunchArgument('explore_time_s', default_value='0.0',
+                              description='Explorer time limit in seconds (0 = no limit).'),
+        DeclareLaunchArgument('explore_distance_m', default_value='0.0',
+                              description='Explorer distance limit in metres (0 = no limit).'),
+        DeclareLaunchArgument('explore_stop_on_detection', default_value='false',
+                              description='Stop explorer when target_class detected on /detections.'),
         OpaqueFunction(function=_launch_setup),
     ])

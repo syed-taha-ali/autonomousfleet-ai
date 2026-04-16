@@ -5,10 +5,10 @@ in an unknown small room, captures a home pose, explores via frontier
 goals, watches for a target COCO class via YOLO + temporal voting, and
 navigates back to home on confirmed detection.
 
-Session A (this log) covers **stack-level integration** — launch
-composition, CPU headroom, SLAM + Nav2 + perception coexistence, and the
-state-machine dry-run. The full suitcase demo (Session B) is blocked on a
-planner tuning pass described in §4.3.
+Session A covers **stack-level integration** — launch composition, CPU
+headroom, SLAM + Nav2 + perception coexistence, and the state-machine
+dry-run. Session B (2026-04-17) covers the **suitcase demo** after the
+planner tuning pass resolved §4.3.
 
 ---
 
@@ -278,11 +278,43 @@ stack is stable and CPU headroom, while thin, is positive.
 
 **What didn't:** See §4.3 for the planner failure chain.
 
-### 3.4 Session B (suitcase demo) — not attempted
+### 3.4 Session B — suitcase demo (PASS, 2026-04-17)
 
-Blocked on §4.3. Planner must reliably generate paths to frontier
-targets before measuring home-return error, detection distance, or
-end-to-end duration.
+Conducted after resolving §4.3 (global costmap tuning: `robot_radius`
+0.12→0.08, `obstacle_min_range` 0→0.15, `cost_scaling_factor` 3→5) and
+§4.2 (timeout bug via `_timed_out` flag).
+
+**Trial 1 — Find-suitcase-return-home (full pipeline):**
+
+| Metric | Value |
+|---|---|
+| Status | SUCCEEDED |
+| Target | suitcase (YOLO confidence 0.749) |
+| Votes | 3/5 |
+| Home pose | (1.02, 1.82) |
+| Detection pose | (1.35, 1.67) |
+| Home return error | 0.477 m |
+
+State sequence: CAPTURE_HOME → EXPLORING → TARGET_CONFIRMED →
+RETURN_HOME → DONE. Full end-to-end pipeline validated: staggered
+launch → SLAM mapping → Nav2 frontier goals → YOLO detection →
+temporal voting → confirm → navigate home.
+
+### 3.5 Explorer exit-condition tests (PASS, 2026-04-17)
+
+`simple_explore_node` was rewritten with four parameter-driven exit
+conditions: time limit, distance limit, object detection, and frontier
+exhaustion. Three on-robot tests validated the first three:
+
+| Test | Exit condition | Parameter | Result | Distance | Elapsed |
+|---|---|---|---|---|---|
+| 1 | Time | `max_explore_time_s: 60` | PASS | 6.32 m | 62 s |
+| 2 | Distance | `max_explore_distance_m: 1.0` | PASS | 1.19 m | 6 s |
+| 3 | Detection | `stop_on_detection: true, target_class: suitcase` | PASS | 1.74 m | 14 s |
+
+All three exit conditions triggered correctly. The slight overshoot
+(62s vs 60s, 1.19m vs 1.0m) is expected — checks run on the replan
+timer interval (2s), not continuously.
 
 ---
 
@@ -382,12 +414,12 @@ Proposed next pass (outside this session):
 
 ## 6. Next steps
 
-- Fix §4.2 (TIMEOUT state) — 15-minute change.
-- Investigate §4.3 (planner + exploration costmap tuning) — separate
-  focused session, probably an hour on-robot + iteration.
-- Then Session B: 3 trials with a real carry-on suitcase in a
-  small room. Measure end-to-end duration, detection distance,
-  home-return error.
-- Commit Phase 5a infrastructure (staggered launch, throttle, mission
-  control package, action definition) to `phase-5a-find-object-return-home`
-  once §4.2 is fixed. Tag §4.3 as a separate follow-up branch.
+- ~~Fix §4.2 (TIMEOUT state)~~ — done (2026-04-17, `_timed_out` flag).
+- ~~Investigate §4.3 (planner + exploration costmap tuning)~~ — done
+  (2026-04-17, global costmap `robot_radius` 0.08, `cost_scaling_factor`
+  5.0, `obstacle_min_range` 0.15).
+- ~~Session B: suitcase demo~~ — done (2026-04-17, §3.4).
+- ~~Explorer exit conditions~~ — done (2026-04-17, §3.5).
+- Commit all Phase 5a work to `phase-5a-find-object-return-home` and
+  merge PR #5 to main.
+- Update CLAUDE.md Current State with Phase 5a summary.
