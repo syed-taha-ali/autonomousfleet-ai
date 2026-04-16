@@ -45,6 +45,28 @@ rsync to it over SSH), then read them from `/home/ubuntu/shared` inside the
 container. This is the path to use when an SSH heredoc keeps eating your
 Python quoting — write the script on the Dev PC, sync, then run.
 
+### 1.4 Syncing the Pi repo to a new branch
+
+When a new branch lands on GitHub that the Pi needs (e.g. `phase-N-foo`),
+never blow away the working tree with `git checkout -- .` or `git reset
+--hard` — uncommitted Pi-side edits from a live debug session can
+disappear. Safe recipe:
+
+```bash
+# Inside /home/ubuntu/workspace/ros2_ws/src/autonomousfleet-ai
+git stash push -u -m "pre-<branch>-sync backup $(date +%F-%H%M)"
+git fetch origin
+git checkout <branch>
+git branch -D <stale-local-branch>   # only after confirming nothing was lost
+```
+
+Any pre-existing uncommitted Pi edits are then recoverable with `git stash
+list` → `git stash show -p stash@{0}` → `git stash pop` (or `apply`). Stashes
+persist until explicitly dropped, so even a stash made days ago is still
+inspectable. This matters because the Pi is a separate checkout from the
+Dev PC, and a fast-moving session may have in-situ fixes that were not yet
+pushed.
+
 ---
 
 ## 2. Sourcing overlays — the rule that burns every session

@@ -4,10 +4,17 @@
   <name>af_perception</name>
   <version>0.1.0</version>
   <description>
-    AutonomousFleet AI distributed perception pipeline. Runs on the Dev PC (GPU),
-    consumes compressed camera streams from the Pi over WiFi, runs YOLO object
-    detection, back-projects detections to 3D, and publishes a PointCloud2 the
-    stock Nav2 ObstacleLayer consumes as a second observation source.
+    AutonomousFleet AI perception pipeline. Two deployment targets share the
+    same downstream interface (vision_msgs/Detection2DArray on /detections):
+      * Phase 4 (Dev PC): yolo_detector_node runs Ultralytics PyTorch on CUDA
+        and consumes a compressed camera stream over WiFi.
+      * Phase 4.1 (on-robot): yolo_onnx_node runs ONNX Runtime on the Pi 5
+        CPU against a local /camera/image_raw topic — raw frames never
+        cross WiFi. Install onnxruntime in the container with
+        `pip install --user onnxruntime`.
+    depth_estimator_node back-projects detections onto the floor plane and
+    publishes both /detected_objects_3d and an optional /vision_obstacles
+    PointCloud2 for the Nav2 ObstacleLayer.
   </description>
   <maintainer email="nbstaha@gmail.com">Syed Taha Ali</maintainer>
   <license>MIT</license>

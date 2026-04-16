@@ -13,7 +13,9 @@ setup(
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', glob('launch/*.launch.py')),
         ('share/' + package_name + '/config', glob('config/*.yaml')),
-        ('share/' + package_name + '/models', glob('models/*.md')),
+        ('share/' + package_name + '/models',
+            glob('models/*.md') + glob('models/*.onnx') + glob('models/*.pt')),
+        ('share/' + package_name + '/scripts', glob('scripts/*.sh')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -26,6 +28,7 @@ setup(
         'console_scripts': [
             'image_decompressor_node = af_perception.image_decompressor_node:main',
             'yolo_detector_node = af_perception.yolo_detector_node:main',
+            'yolo_onnx_node = af_perception.yolo_onnx_node:main',
             'depth_estimator_node = af_perception.depth_estimator_node:main',
         ],
     },

@@ -2,9 +2,12 @@
 #
 # Robot: holonomic mecanum, footprint ~24 cm x 20 cm, circumscribed radius ~0.12 m.
 # Sensors: MS200 LiDAR on /scan, wheel+IMU fused odom on /odom (base_footprint -> map).
-# Optional second obstacle source: /vision_obstacles (sensor_msgs/PointCloud2)
-# produced by the Dev-PC perception stack (af_perception, Phase 4). The local
-# costmap is already wired for it; it is clearing=false until the topic is live.
+#
+# Obstacle avoidance is LiDAR-only by default (2026-04-15 sensor scope decision:
+# flat-floor indoor scope with clean obstacles, monocular RGB camera, no depth).
+# The `vision:` observation-source block is kept pre-configured in the local
+# costmap but is NOT referenced by `observation_sources` — change the string to
+# `scan vision` to re-enable vision-augmented marking for experiments.
 #
 # Conservative speeds by default (max 0.2 m/s). Raise gradually only once DWB
 # tracks the plan cleanly.
@@ -271,10 +274,13 @@ local_costmap:
       obstacle_layer:
         plugin: nav2_costmap_2d::ObstacleLayer
         enabled: true
-        # `vision` is the Phase-4 hook. Until af_perception publishes
-        # /vision_obstacles, the layer simply sees no marks on that source —
-        # LiDAR continues to clear & mark normally (graceful degradation).
-        observation_sources: scan vision
+        # LiDAR-only observation sources by default (2026-04-15 sensor scope
+        # decision: flat-floor indoor scope, overhangs/dropoffs explicitly
+        # out of scope, YOLO is for Phase 5 NL missions not obstacle
+        # avoidance). To re-enable vision marking, change this to
+        # `scan vision` — the `vision:` block below is already configured
+        # so it's a one-line YAML edit.
+        observation_sources: scan
         scan:
           topic: /scan
           sensor_frame: lidar_frame

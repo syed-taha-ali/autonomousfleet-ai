@@ -1,0 +1,52 @@
+# On-robot (Phase 4.1) perception configuration.
+#
+# Runs inside the MentorPi Docker container on the Pi 5. The camera stream
+# stays Pi-local — only `/detections` and the optional /vision_obstacles
+# PointCloud2 cross WiFi, saving ~2-4 Mbps of bandwidth compared to the
+# Phase 4 Dev-PC topology.
+#
+# Override any value on the command line, e.g.:
+#   ros2 launch af_perception perception_pi.launch.py \
+#       model_path:=/home/ubuntu/workspace/ros2_ws/src/autonomousfleet-ai/af_perception/models/best_320.onnx
+
+yolo_onnx_node:
+  ros__parameters:
+    # Absolute path to a custom ONNX model. If empty, the node falls back
+    # to `<package_share>/models/<model_name>` which is where the export
+    # script (scripts/export_onnx.sh) drops the COCO-pretrained YOLOv8n.
+    model_path: ""
+    model_name: yolov8n_320.onnx
+    input_size: 320
+    confidence_threshold: 0.35
+    iou_threshold: 0.45
+    num_threads: 1
+    process_every_n: 3
+    input_topic: /camera/image_raw
+    detections_topic: /detections
+    # Integer class-index filter. Omitted/empty/negative = all COCO classes.
+    # Indoor-nav subset (person, chair, sofa, potted plant, dining table, TV):
+    #   classes: [0, 56, 57, 58, 60, 62]
+
+depth_estimator_node:
+  ros__parameters:
+    # 'ground' back-projects bbox bottom-centre rays onto the floor plane
+    # using the monocular camera intrinsics + base_link->depth_cam TF. The
+    # MentorPi has no hardware depth sensor, so this is the only supported
+    # mode on this platform (see CLAUDE.md sensor scope decision 2026-04-15).
+    mode: ground
+    detections_topic: /detections
+    camera_info_topic: /camera/camera_info
+    objects_topic: /detected_objects_3d
+    obstacles_topic: /vision_obstacles
+    obstacle_frame: base_link
+    # Matches the `frame_id` usb_cam stamps onto /camera/image_raw — the
+    # URDF `depth_cam` link is rigidly attached to base_link.
+    optical_frame: depth_cam
+    cluster_radius: 0.1
+    cluster_samples: 9
+    min_depth: 0.2
+    max_depth: 5.0
+    ground_plane_z: 0.0
+    fallback_camera_height: 0.15
+    fallback_camera_pitch: 0.0
+    sync_slop: 0.1
