@@ -1,0 +1,20 @@
+# Goal
+string target_class            # COCO class name, e.g. "suitcase"
+float32 confidence_min 0.5
+uint16 votes_required 3        # K in K-of-N temporal voting
+uint16 window_size 5           # N in K-of-N temporal voting
+float32 max_duration_s 300.0   # 5-min hard cap
+float32 max_distance_m 10.0    # geofence from home
+bool approach_target false     # just confirm; don't drive close
+---
+# Result
+bool success
+string termination_reason      # found | timeout | max_distance | battery | cancelled
+geometry_msgs/PoseStamped home_pose
+geometry_msgs/PoseStamped detection_pose
+float32 home_return_error_m
+---
+# Feedback
+string current_state
+float32 distance_travelled_m
+float32 battery_voltage
