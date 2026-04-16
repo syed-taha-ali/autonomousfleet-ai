@@ -1,0 +1,56 @@
+# Default Dev-PC perception configuration.
+#
+# Override any of these on the `ros2 launch` command line, e.g.:
+#   ros2 launch af_perception perception.launch.py mode:=depth \
+#       model_path:=/abs/path/to/best.pt
+
+image_decompressor_node:
+  ros__parameters:
+    input_topic: /camera/image_raw/compressed
+    output_topic: /camera/image_raw
+    output_encoding: bgr8
+
+yolo_detector_node:
+  ros__parameters:
+    # Leave model_path empty to use the Ultralytics zoo model below. Drop a
+    # custom-trained `best.pt` into af_perception/models/ and point here
+    # (absolute path, e.g. /.../install/af_perception/share/af_perception/models/best.pt).
+    model_path: ""
+    model_name: yolov5su.pt
+    device: cuda:0
+    confidence_threshold: 0.5
+    iou_threshold: 0.45
+    image_size: 640
+    input_topic: /camera/image_raw
+    detections_topic: /detections
+    annotated_topic: /detection_image
+    publish_annotated: true
+    # Integer class-index filter. Omitted/empty/negative = all COCO classes.
+    # For indoor nav, useful subsets:
+    #   classes: [0, 39, 41, 56, 57, 58, 60, 62, 63, 67, 72, 73]
+    #     = person, bottle, cup, chair, sofa, potted plant, dining table,
+    #       tv, laptop, cell phone, refrigerator, book
+    # classes: []    # <- DO NOT write this — rclpy can't infer the type.
+
+depth_estimator_node:
+  ros__parameters:
+    # "ground" works with the plain USB camera on the M1 (no depth sensor
+    # needed) by intersecting each bbox's bottom-centre ray with the floor.
+    # Switch to "depth" once the depth-camera driver is publishing
+    # /camera/depth/image_raw.
+    mode: ground
+    detections_topic: /detections
+    depth_topic: /camera/depth/image_raw
+    camera_info_topic: /camera/camera_info
+    objects_topic: /detected_objects_3d
+    obstacles_topic: /vision_obstacles
+    obstacle_frame: base_link
+    optical_frame: camera_color_optical_frame
+    cluster_radius: 0.1
+    cluster_samples: 9
+    min_depth: 0.2
+    max_depth: 5.0
+    ground_plane_z: 0.0
+    fallback_camera_height: 0.15   # camera_link height above the floor, m
+    fallback_camera_pitch: 0.0
+    sync_slop: 0.1
