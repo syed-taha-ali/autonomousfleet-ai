@@ -1,0 +1,36 @@
+# Named locations for the room1 map.
+# Coordinates are in the map frame (metres). Adjust after loading the map
+# in RViz and clicking "Publish Point" on landmarks.
+#
+# Map origin: (-3.22, -5.01), resolution: 0.05 m/px, size: ~5.9 x 7.55 m.
+
+rooms:
+  centre:
+    x: 0.0
+    y: 0.0
+    description: "Centre of the mapped room"
+
+  door:
+    x: -1.5
+    y: 1.5
+    description: "Near the room entrance"
+
+  far_wall:
+    x: 1.5
+    y: 1.5
+    description: "Opposite wall from the door"
+
+  corner_a:
+    x: -1.5
+    y: -1.5
+    description: "Back-left corner"
+
+  corner_b:
+    x: 1.5
+    y: -1.5
+    description: "Back-right corner"
+
+  home:
+    x: 0.0
+    y: 0.0
+    description: "Default starting position"

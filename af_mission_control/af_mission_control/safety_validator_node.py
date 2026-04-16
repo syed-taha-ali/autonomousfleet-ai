@@ -19,6 +19,7 @@ _ALLOWED_TYPES = frozenset([
     'find_object',
     'navigate_to',
     'patrol',
+    'drive_for',
     'stop',
     'return_home',
     'set_speed',
