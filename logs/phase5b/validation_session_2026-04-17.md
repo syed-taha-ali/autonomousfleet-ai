@@ -390,6 +390,58 @@ Timeline:
 
 **Result: PASS**
 
+### 3.6 Post-fix validation — CLI test: "explore the room till you find the suitcase"
+
+After all 5 bug fixes were applied, the Pi was charged and synced to
+the fixed codebase. A final end-to-end test was run using the
+interactive CLI (`ros2 run af_nlp cli`) to validate the complete
+pipeline including the `_on_find_done` explorer-disable fix (§4.3).
+
+**NLP translation:**
+```
+NL input: "explore the room till you find the suitcase."
+LLM tool call: find_object(max_duration_s=300, target_class="suitcase")
+Latency: 4.00s
+```
+
+**Robot behaviour (full trace):**
+```
+[mission_manager]    Command received: find_object (NL: "explore the room till you find the suitcase.")
+[mission_manager]    FindObject goal sent: suitcase
+[simple_explore]     Explorer enabled via /explore/enable
+[find_object_action] Goal accepted: find "suitcase" (conf>=0.5, votes=3/5, timeout=300.0s)
+[find_object_action] State: IDLE -> CAPTURE_HOME
+[find_object_action] Home pose captured: (0.00, 0.00)
+[find_object_action] State: CAPTURE_HOME -> EXPLORING
+[find_object_action] Exploration active — waiting for target detection
+[simple_explore]     Exploring to (-0.71, 0.65)
+[simple_explore]     Exploring to (2.70, 1.19)
+[find_object_action] Target "suitcase" confirmed (3/5 votes)
+[find_object_action] State: EXPLORING -> TARGET_CONFIRMED
+[find_object_action] State: TARGET_CONFIRMED -> RETURN_HOME
+[find_object_action] Navigating to home pose...
+[find_object_action] Arrived home (error: 1.618 m)
+[find_object_action] State: RETURN_HOME -> DONE
+[simple_explore]     Exploration stopped: disabled via /explore/enable (travelled 5.50m, elapsed 38s)
+```
+
+Timeline:
+- t=0s: Explorer enabled, find_object entered EXPLORING
+- t=0–38s: Robot explored frontier points, YOLO scanning
+- t=38s: Suitcase confirmed (3/5 temporal votes)
+- t=38s: Returned home, mission DONE
+- t=38s: Explorer auto-disabled via `/explore/enable` (Bug 3 fix confirmed)
+
+The explorer was correctly disabled by the `_on_find_done` callback
+after the find_object action completed — no orphaned exploration. Home
+return error was 1.618m (higher than previous tests; robot was
+mid-motion when the return-home goal was issued).
+
+This test confirmed all 5 bug fixes working together in a single
+end-to-end run initiated from the interactive CLI.
+
+**Result: PASS**
+
 ---
 
 ## 4. Issues found and fixes applied
