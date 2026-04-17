@@ -17,6 +17,7 @@ from rclpy.node import Node
 from action_msgs.srv import CancelGoal
 from geometry_msgs.msg import PoseStamped, Twist
 from nav2_msgs.action import NavigateToPose, FollowWaypoints
+from std_msgs.msg import Bool
 
 from af_msgs.action import FindObject
 from af_msgs.msg import MissionCommand, MissionStatus
@@ -30,6 +31,7 @@ class MissionManagerNode(Node):
 
         self._status_pub = self.create_publisher(MissionStatus, '/mission/status', 10)
         self._cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
+        self._explore_enable_pub = self.create_publisher(Bool, '/explore/enable', 10)
 
         self.create_subscription(
             MissionCommand, '/mission/command', self._on_command, 10,
@@ -137,6 +139,7 @@ class MissionManagerNode(Node):
         goal.max_distance_m = float(params.get('max_distance_m', 10.0))
         goal.approach_target = bool(params.get('approach_target', False))
 
+        self._explore_enable_pub.publish(Bool(data=True))
         future = self._find_object_client.send_goal_async(goal)
         future.add_done_callback(lambda f: self._on_find_goal_response(f, mission_id))
         self.get_logger().info(f'FindObject goal sent: {goal.target_class}')
@@ -149,6 +152,19 @@ class MissionManagerNode(Node):
             return
         self._active_find_handle = handle
         self._publish_status(mission_id, 'exploring')
+        handle.get_result_async().add_done_callback(
+            lambda f: self._on_find_done(f, mission_id))
+
+    def _on_find_done(self, future, mission_id):
+        self._active_find_handle = None
+        self._explore_enable_pub.publish(Bool(data=False))
+        result = future.result()
+        if result.status == 4:  # SUCCEEDED
+            self._publish_status(mission_id, 'done')
+            self.get_logger().info('FindObject mission completed — explorer disabled')
+        else:
+            self._publish_status(mission_id, 'failed', 'find_object_aborted')
+            self.get_logger().info('FindObject mission aborted — explorer disabled')
 
     def _dispatch_navigate_to(self, params: dict, mission_id: str = ''):
         if not self._nav_client.wait_for_server(timeout_sec=5.0):
@@ -235,13 +251,16 @@ class MissionManagerNode(Node):
             if self._drive_pub_timer is not None:
                 self._drive_pub_timer.cancel()
                 self._drive_pub_timer = None
+            if self._drive_timer is not None:
+                self._drive_timer.cancel()
+                self._drive_timer = None
             self._cmd_vel_pub.publish(Twist())
             self.get_logger().info('Drive complete — stopped')
             self._publish_status(mission_id, 'done')
 
         if self._drive_timer is not None:
             self._drive_timer.cancel()
-        self._drive_timer = self.create_timer(duration, lambda: stop_driving(),
+        self._drive_timer = self.create_timer(duration, stop_driving,
                                                callback_group=self._cb_group)
 
     def _dispatch_stop(self, params: dict = None, mission_id: str = ''):
@@ -262,9 +281,22 @@ class MissionManagerNode(Node):
             self._active_find_handle.cancel_goal_async()
             self._active_find_handle = None
 
-        self._nav_client.wait_for_server(timeout_sec=1.0)
+        self._explore_enable_pub.publish(Bool(data=False))
+        self._cancel_all_nav2_goals()
         self._publish_status(mission_id, 'idle')
         self.get_logger().info('STOP: cancelled all goals, zeroed cmd_vel')
+
+    def _cancel_all_nav2_goals(self):
+        for action_name in ('navigate_to_pose', 'follow_waypoints'):
+            cancel_srv = self.create_client(
+                CancelGoal,
+                f'/{action_name}/_action/cancel_goal',
+                callback_group=self._cb_group,
+            )
+            if cancel_srv.wait_for_service(timeout_sec=1.0):
+                req = CancelGoal.Request()
+                cancel_srv.call_async(req)
+            cancel_srv.destroy()
 
     def _dispatch_return_home(self, params: dict = None, mission_id: str = ''):
         self._dispatch_navigate_to({'x': 0.0, 'y': 0.0}, mission_id)

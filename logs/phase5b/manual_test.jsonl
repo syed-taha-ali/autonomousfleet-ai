@@ -1,0 +1,1 @@
+{"timestamp": 1776425767.4212031, "nl_input": "explore the room till you find the suitcase.", "tool_name": "find_object", "tool_args": {"max_duration_s": 300, "target_class": "suitcase"}, "latency_s": 4.004, "outcome": "dispatched", "model": "qwen2.5:7b-instruct-q4_K_M"}

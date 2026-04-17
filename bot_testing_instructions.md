@@ -185,6 +185,11 @@ Pick the right launch file for the phase under test:
 | 2 mapping | `ros2 launch af_bringup slam.launch.py` | + MS200 + `scan_sanitizer` + slam_toolbox |
 | 2 localisation | `ros2 launch af_bringup slam.launch.py mode:=localization map:=<path>.yaml` | + map_server + AMCL |
 | 3 | `ros2 launch af_bringup nav2.launch.py map:=<path>.yaml` | Full Nav2 stack under `lifecycle_manager_navigation` |
+| 5a/5b (Pi) | `./af_bringup/scripts/start_pi.sh` | Full stack via SSH: HAL+SLAM+Nav2+mission+perception+explorer. Kills stale procs, sources all 3 workspaces, waits 35s, verifies 4 critical nodes |
+| 5a/5b (Pi) | `./af_bringup/scripts/start_pi.sh enable_explore:=false` | Same but without auto-explorer — use for NLP-controlled missions |
+| 5b (Dev PC) | `./af_bringup/scripts/start_nlp.sh` | NLP node only (Ollama LLM translator). Requires Ollama running locally |
+| 5b (Dev PC) | `./af_bringup/scripts/start_nlp.sh --with-cli` | NLP node + opens interactive CLI in a second terminal |
+| teardown | `./af_bringup/scripts/stop_pi.sh` | Kills all ROS/Python inside the Pi container, reports remaining processes |
 
 Launch args worth knowing:
 
@@ -194,6 +199,8 @@ Launch args worth knowing:
 | `start_robot` | `true` | `false` if HAL already running |
 | `start_lidar` | `true` | `false` if MS200 driver already running |
 | `use_sim_time` | `false` | `true` in Gazebo |
+| `enable_explore` | `true` | `false` for NLP-controlled missions (no auto-explorer) |
+| `enable_perception` | `true` | `false` to skip YOLO (lighter CPU) |
 
 ### 4.1 Post-launch health checks (wait ~15 s, then run in order)
 
@@ -465,10 +472,67 @@ switch — do not yank the battery, let filesystems flush.
 
 ---
 
-## 8. When something new breaks
+## 8. Phase 5b — NLP mission control workflow
 
-1. Check this file first — symptom table in §5 covers every recurring
-   failure mode across Phases 1–3.
+### 8.1 Prerequisites
+
+- Ollama installed and running on the Dev PC: `ollama serve`
+- Model pulled: `ollama pull qwen2.5:7b-instruct-q4_K_M`
+- Robot stack already running on the Pi (via `start_pi.sh`)
+
+### 8.2 Full NLP session (Pi + Dev PC)
+
+```bash
+# 1. Bring up the Pi stack (NLP-controlled, no auto-explorer)
+cd af_bringup/scripts
+./start_pi.sh enable_explore:=false
+# Wait for "Robot stack is ready" and all 4 ✓ checks
+
+# 2. Launch NLP on Dev PC (with interactive CLI)
+./start_nlp.sh --with-cli
+
+# 3. Send commands in the CLI terminal:
+#   > find the suitcase
+#   > go to the door
+#   > move forward for 5 seconds
+#   > stop
+#   > explore this room
+
+# 4. Teardown
+./stop_pi.sh
+# Ctrl-C the NLP node on Dev PC
+```
+
+### 8.3 NLP command types
+
+| Command type | Example phrases | What it does |
+|---|---|---|
+| `find_object` | "find the suitcase", "look for a chair" | Triggers FindObject action (explore + YOLO + return home) |
+| `navigate_to` | "go to the door", "move to corner_a" | Nav2 goal to named room location (from `rooms.yaml`) or coordinates |
+| `patrol` | "patrol the room", "visit door and far_wall" | FollowWaypoints through listed locations |
+| `drive_for` | "move forward for 5 seconds", "go left for 3 seconds" | Open-loop cmd_vel for specified duration and direction |
+| `stop` | "stop", "halt" | Zeros cmd_vel, cancels active Nav2 goals and drive timers |
+| `return_home` | "come back", "go home" | Nav2 goal to (0,0) |
+| `set_speed` | "go faster", "set speed to 0.2" | Adjusts speed parameter (runtime reconfigure pending) |
+| `scan_area` | "explore", "scan the area", "look around" | Triggers exploration without object-detection stop condition |
+
+### 8.4 NLP troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `ERROR: Ollama is not running` from `start_nlp.sh` | Ollama server not started | `ollama serve` in a separate terminal |
+| First command takes 30–60s | Ollama cold-loading the model into RAM | Normal on first call; subsequent calls ~2–3s |
+| LLM returns text instead of tool call | Qwen2.5 occasionally ignores tool-calling schema | Retry mechanism handles this automatically (up to 2 retries + keyword fallback) |
+| `_processing` flag stuck, no new commands accepted | Previous Ollama call crashed without clearing the guard | Restart `nlp_command_node` |
+| Robot auto-exploring when NLP should control | `enable_explore:=false` not passed to `start_pi.sh` | Relaunch: `./stop_pi.sh && ./start_pi.sh enable_explore:=false` |
+| CLI shows flood of `[CMD]` messages | Stale `nlp_command_node` processes from previous sessions | Kill all: `pkill -9 -f nlp_command` then relaunch |
+
+---
+
+## 9. When something new breaks
+
+1. Check this file first — symptom tables in §5 and §8.4 cover every
+   recurring failure mode across Phases 1–5b.
 2. If it's new, read the tail of the launch log. Nav2 and HAL both log the
    offending node name and a human-readable error.
 3. Check §3 — 80 % of "new" issues are actually duplicate-process or

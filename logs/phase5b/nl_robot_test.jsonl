@@ -1,0 +1,3 @@
+{"timestamp": 1776380174.133414, "nl_input": "stop", "tool_name": "stop", "tool_args": {}, "latency_s": 2.652, "outcome": "dispatched", "model": "qwen2.5:7b-instruct-q4_K_M"}
+{"timestamp": 1776381281.3211365, "nl_input": "Make the robot move 1 meter in any direction", "tool_name": "drive_for", "tool_args": {"direction": "forward", "duration_s": 6.67, "speed": 0.15}, "latency_s": 2.944, "outcome": "dispatched", "model": "qwen2.5:7b-instruct-q4_K_M"}
+{"timestamp": 1776381394.0274599, "nl_input": "stop", "tool_name": "stop", "tool_args": {}, "latency_s": 0.576, "outcome": "dispatched", "model": "qwen2.5:7b-instruct-q4_K_M"}

@@ -273,6 +273,8 @@ class NlpCommandNode(Node):
 
         self._system_prompt = _build_system_prompt(self._rooms)
         self._processing = False
+        self._last_text = ''
+        self._last_text_time = 0.0
 
         self._cmd_pub = self.create_publisher(MissionCommand, '/mission/command', 10)
         self._clarify_pub = self.create_publisher(String, '/nlp/clarification_needed', 10)
@@ -305,6 +307,12 @@ class NlpCommandNode(Node):
         text = msg.data.strip()
         if not text:
             return
+
+        now = time.monotonic()
+        if text == self._last_text and (now - self._last_text_time) < 5.0:
+            return
+        self._last_text = text
+        self._last_text_time = now
 
         if self._processing:
             self.get_logger().warn(f'Busy processing — dropped: "{text}"')
