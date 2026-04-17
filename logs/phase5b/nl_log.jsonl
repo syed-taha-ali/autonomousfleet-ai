@@ -1,0 +1,2 @@
+{"timestamp": 1776431259.9142249, "nl_input": "explore to find the suitcase", "tool_name": "find_object", "tool_args": {"target_class": "suitcase", "confidence_min": 0.5, "max_duration_s": 300}, "latency_s": 3.638, "outcome": "dispatched", "model": "qwen2.5:7b-instruct-q4_K_M"}
+{"timestamp": 1776438511.8107147, "nl_input": "explore till you find the suitcase.", "tool_name": "find_object", "tool_args": {"max_duration_s": 300, "object": null, "target_class": "suitcase", "confidence_min": 0.5}, "latency_s": 3.75, "outcome": "dispatched", "model": "qwen2.5:7b-instruct-q4_K_M"}
