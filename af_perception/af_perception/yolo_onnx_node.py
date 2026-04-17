@@ -116,6 +116,7 @@ class YoloOnnxNode(Node):
             str(self.get_parameter('detections_topic').value),
             10,
         )
+
         self._sub = self.create_subscription(
             Image,
             str(self.get_parameter('input_topic').value),
