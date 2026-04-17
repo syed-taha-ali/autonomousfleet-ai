@@ -24,6 +24,7 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import OccupancyGrid, Odometry
 from nav2_msgs.action import NavigateToPose
+from std_msgs.msg import Bool
 from vision_msgs.msg import Detection2DArray
 
 
@@ -59,12 +60,14 @@ class SimpleExploreNode(Node):
         self._target_class = self.get_parameter('target_class').value
         self._det_conf_min = self.get_parameter('detection_confidence_min').value
 
+        self.declare_parameter('start_enabled', True)
+
         self._map_data = None
         self._map_info = None
         self._nav_active = False
         self._nav_handle = None
         self._goal_send_time = 0.0
-        self._enabled = True
+        self._enabled = self.get_parameter('start_enabled').value
 
         # Exit condition state
         self._first_goal_time = 0.0
@@ -94,6 +97,11 @@ class SimpleExploreNode(Node):
                 Detection2DArray, '/detections', self._on_detections, det_qos,
                 callback_group=self._cb_group,
             )
+
+        self.create_subscription(
+            Bool, '/explore/enable', self._on_enable, 10,
+            callback_group=self._cb_group,
+        )
 
         self._nav_client = ActionClient(
             self, NavigateToPose, 'navigate_to_pose',
@@ -143,6 +151,17 @@ class SimpleExploreNode(Node):
                         and result.hypothesis.score >= self._det_conf_min):
                     self._detected = True
                     return
+
+    def _on_enable(self, msg: Bool):
+        if msg.data and not self._enabled:
+            self._enabled = True
+            self._first_goal_time = 0.0
+            self._distance_travelled = 0.0
+            self._detected = False
+            self._exit_reason = ''
+            self.get_logger().info('Explorer enabled via /explore/enable')
+        elif not msg.data and self._enabled:
+            self._stop('disabled via /explore/enable')
 
     # ── Planning loop ──────────────────────────────────────────────
 

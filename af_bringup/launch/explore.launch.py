@@ -127,21 +127,24 @@ def _launch_setup(context):
         ))
 
     # t=25  Frontier exploration (random-walk fallback)
-    if enable_explore:
-        simple_explore = Node(
-            package='af_mission_control',
-            executable='simple_explore_node',
-            name='simple_explore',
-            output='screen',
-            parameters=[{
-                'max_explore_time_s': LaunchConfiguration('explore_time_s'),
-                'max_explore_distance_m': LaunchConfiguration('explore_distance_m'),
-                'stop_on_detection': LaunchConfiguration('explore_stop_on_detection'),
-                'target_class': target_class,
-                'detection_confidence_min': 0.5,
-            }],
-        )
-        entities.append(TimerAction(period=25.0, actions=[simple_explore]))
+    # Always launched; listens to /explore/enable for dynamic start/stop.
+    # start_enabled=true means autonomous exploration from boot;
+    # start_enabled=false means explorer waits for mission_manager to enable it.
+    simple_explore = Node(
+        package='af_mission_control',
+        executable='simple_explore_node',
+        name='simple_explore',
+        output='screen',
+        parameters=[{
+            'start_enabled': enable_explore,
+            'max_explore_time_s': LaunchConfiguration('explore_time_s'),
+            'max_explore_distance_m': LaunchConfiguration('explore_distance_m'),
+            'stop_on_detection': LaunchConfiguration('explore_stop_on_detection'),
+            'target_class': target_class,
+            'detection_confidence_min': 0.5,
+        }],
+    )
+    entities.append(TimerAction(period=25.0, actions=[simple_explore]))
 
     return entities
 
