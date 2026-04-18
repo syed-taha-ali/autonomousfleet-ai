@@ -46,9 +46,13 @@ ros2 launch af_monitoring monitor.launch.py &
 PIDS+=($!)
 echo "[monitoring] perf_monitor started (PID ${PIDS[-1]})"
 
-ros2 run af_monitoring detection_overlay_node &
-PIDS+=($!)
-echo "[monitoring] detection_overlay started (PID ${PIDS[-1]})"
+if [[ "${RVIZ_MODE}" != "swarm" ]]; then
+    ros2 run af_monitoring detection_overlay_node &
+    PIDS+=($!)
+    echo "[monitoring] detection_overlay started (PID ${PIDS[-1]})"
+else
+    echo "[monitoring] Skipping detection_overlay (swarm mode, no camera)"
+fi
 
 if $DO_RVIZ; then
     RVIZ_CFG="$(ros2 pkg prefix af_monitoring)/share/af_monitoring/config/${RVIZ_MODE}.rviz"

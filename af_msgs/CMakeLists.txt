@@ -32,6 +32,9 @@ set(msg_files
   "msg/ServosPosition.msg"
   "msg/SetBusServoState.msg"
   "msg/SetPWMServoState.msg"
+  "msg/FleetStatus.msg"
+  "msg/DetectedObject.msg"
+  "msg/FrontierClaim.msg"
 )
 
 set(srv_files

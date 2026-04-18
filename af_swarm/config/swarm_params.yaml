@@ -1,0 +1,42 @@
+# Default swarm parameters for the collaborative search demo.
+swarm_coordinator:
+  ros__parameters:
+    num_robots: 3
+    robot_prefix: 'robot_'
+    objects_target: 5
+    coverage_target: 90.0
+    mission_timeout_s: 300.0
+    home_x: 0.0
+    home_y: 0.0
+
+object_registry:
+  ros__parameters:
+    num_robots: 3
+    robot_prefix: 'robot_'
+    dedup_radius_m: 0.5
+
+ground_truth_detector:
+  ros__parameters:
+    detection_range: 2.0
+    fov_deg: 60.0
+    object_classes: ['obj_0', 'obj_1', 'obj_2', 'obj_3', 'obj_4']
+    object_x: [3.0, -3.0, -2.0, 1.0, 2.5]
+    object_y: [2.0, -2.0, 2.2, -2.2, 0.5]
+
+distributed_explore:
+  ros__parameters:
+    min_frontier_size: 5
+    claim_penalty: 0.3
+    explore_rate_hz: 0.5
+    goal_tolerance: 0.3
+
+flocking:
+  ros__parameters:
+    separation_radius: 0.5
+    alignment_radius: 2.0
+    cohesion_radius: 3.0
+    separation_weight: 2.0
+    alignment_weight: 1.0
+    cohesion_weight: 1.0
+    max_speed: 0.3
+    update_rate: 10.0

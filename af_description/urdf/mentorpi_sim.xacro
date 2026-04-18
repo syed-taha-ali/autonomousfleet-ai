@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Simulation-only robot description: real robot URDF + Gazebo plugins.
+  Used by af_sim launch files; never loaded on the real Pi.
+  Pass robot_namespace:=robot_0 to namespace all Gazebo ROS plugin topics.
+-->
+<robot name="mentorpi_m1_sim" xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:arg name="robot_namespace" default=""/>
+    <xacro:include filename="$(find af_description)/urdf/mecanum.xacro"/>
+    <xacro:include filename="$(find af_description)/urdf/inertial_matrix.xacro"/>
+    <xacro:include filename="$(find af_description)/urdf/gazebo_plugins.xacro"/>
+</robot>

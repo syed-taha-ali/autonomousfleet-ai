@@ -1,0 +1,122 @@
+<mvsim_world version="1.0">
+    <simul_timestep>0</simul_timestep>
+
+    <gui>
+        <ortho>false</ortho>
+        <show_forces>false</show_forces>
+        <cam_distance>20</cam_distance>
+        <fov_deg>60</fov_deg>
+    </gui>
+
+    <lights>
+    </lights>
+
+    <!-- Ground plane -->
+    <element class="horizontal_plane">
+        <cull_face>BACK</cull_face>
+        <x_min>-8</x_min>
+        <y_min>-7</y_min>
+        <x_max> 8</x_max>
+        <y_max> 7</y_max>
+        <z>0.0</z>
+    </element>
+
+    <element class="ground_grid">
+    </element>
+
+    <!-- Room walls: ~12m x 10m indoor space -->
+    <block name="wall_north">
+        <mass>500</mass> <ground_friction>100.0</ground_friction>
+        <color>#b0b0b0</color> <zmax>1.0</zmax>
+        <init_pose>0 5 0</init_pose>
+        <shape> <pt>-6.0 -0.075</pt> <pt>-6.0 0.075</pt> <pt>6.0 0.075</pt> <pt>6.0 -0.075</pt> </shape>
+    </block>
+    <block name="wall_south">
+        <mass>500</mass> <ground_friction>100.0</ground_friction>
+        <color>#b0b0b0</color> <zmax>1.0</zmax>
+        <init_pose>0 -5 0</init_pose>
+        <shape> <pt>-6.0 -0.075</pt> <pt>-6.0 0.075</pt> <pt>6.0 0.075</pt> <pt>6.0 -0.075</pt> </shape>
+    </block>
+    <block name="wall_east">
+        <mass>500</mass> <ground_friction>100.0</ground_friction>
+        <color>#b0b0b0</color> <zmax>1.0</zmax>
+        <init_pose>6 0 0</init_pose>
+        <shape> <pt>-0.075 -5.0</pt> <pt>-0.075 5.0</pt> <pt>0.075 5.0</pt> <pt>0.075 -5.0</pt> </shape>
+    </block>
+    <block name="wall_west">
+        <mass>500</mass> <ground_friction>100.0</ground_friction>
+        <color>#b0b0b0</color> <zmax>1.0</zmax>
+        <init_pose>-6 0 0</init_pose>
+        <shape> <pt>-0.075 -5.0</pt> <pt>-0.075 5.0</pt> <pt>0.075 5.0</pt> <pt>0.075 -5.0</pt> </shape>
+    </block>
+
+    <!-- Internal obstacles (spread wide, ≥1.5m from walls, ≥2m apart) -->
+    <block name="obstacle_1">
+        <mass>9999</mass> <ground_friction>100.0</ground_friction>
+        <color>#805030</color> <zmax>0.7</zmax>
+        <init_pose>-3.5 2.5 0</init_pose>
+        <shape> <pt>-0.8 -0.075</pt> <pt>-0.8 0.075</pt> <pt>0.8 0.075</pt> <pt>0.8 -0.075</pt> </shape>
+    </block>
+    <block name="obstacle_2">
+        <mass>9999</mass> <ground_friction>100.0</ground_friction>
+        <color>#805030</color> <zmax>0.7</zmax>
+        <init_pose>3.5 -2.5 30</init_pose>
+        <shape> <pt>-0.8 -0.075</pt> <pt>-0.8 0.075</pt> <pt>0.8 0.075</pt> <pt>0.8 -0.075</pt> </shape>
+    </block>
+    <block name="obstacle_3">
+        <mass>9999</mass> <ground_friction>100.0</ground_friction>
+        <color>#4d4d99</color> <zmax>0.5</zmax>
+        <init_pose>0.0 0.0 0</init_pose>
+        <shape> <pt>-0.4 -0.4</pt> <pt>-0.4 0.4</pt> <pt>0.4 0.4</pt> <pt>0.4 -0.4</pt> </shape>
+    </block>
+    <block name="obstacle_4">
+        <mass>9999</mass> <ground_friction>100.0</ground_friction>
+        <color>#805030</color> <zmax>0.7</zmax>
+        <init_pose>3.5 2.5 0</init_pose>
+        <shape> <pt>-0.075 -0.8</pt> <pt>-0.075 0.8</pt> <pt>0.075 0.8</pt> <pt>0.075 -0.8</pt> </shape>
+    </block>
+    <block name="obstacle_5">
+        <mass>9999</mass> <ground_friction>100.0</ground_friction>
+        <color>#805030</color> <zmax>0.7</zmax>
+        <init_pose>-3.5 -2.5 0</init_pose>
+        <shape> <pt>-0.075 -0.8</pt> <pt>-0.075 0.8</pt> <pt>0.075 0.8</pt> <pt>0.075 -0.8</pt> </shape>
+    </block>
+
+    <!-- Target objects (in open corridors between obstacles, ≥1.5m from walls) -->
+    <block name="target_0">
+        <mass>1</mass> <ground_friction>100.0</ground_friction>
+        <color>#ff0000</color> <zmax>0.3</zmax>
+        <init_pose>4.0 0.0 0</init_pose>
+        <shape> <pt>-0.08 -0.08</pt> <pt>-0.08 0.08</pt> <pt>0.08 0.08</pt> <pt>0.08 -0.08</pt> </shape>
+    </block>
+    <block name="target_1">
+        <mass>1</mass> <ground_friction>100.0</ground_friction>
+        <color>#00ff00</color> <zmax>0.3</zmax>
+        <init_pose>-4.0 0.0 0</init_pose>
+        <shape> <pt>-0.08 -0.08</pt> <pt>-0.08 0.08</pt> <pt>0.08 0.08</pt> <pt>0.08 -0.08</pt> </shape>
+    </block>
+    <block name="target_2">
+        <mass>1</mass> <ground_friction>100.0</ground_friction>
+        <color>#0000ff</color> <zmax>0.3</zmax>
+        <init_pose>0.0 3.0 0</init_pose>
+        <shape> <pt>-0.08 -0.08</pt> <pt>-0.08 0.08</pt> <pt>0.08 0.08</pt> <pt>0.08 -0.08</pt> </shape>
+    </block>
+    <block name="target_3">
+        <mass>1</mass> <ground_friction>100.0</ground_friction>
+        <color>#ffff00</color> <zmax>0.3</zmax>
+        <init_pose>0.0 -3.0 0</init_pose>
+        <shape> <pt>-0.08 -0.08</pt> <pt>-0.08 0.08</pt> <pt>0.08 0.08</pt> <pt>0.08 -0.08</pt> </shape>
+    </block>
+    <block name="target_4">
+        <mass>1</mass> <ground_friction>100.0</ground_friction>
+        <color>#ff00ff</color> <zmax>0.3</zmax>
+        <init_pose>-1.5 -1.0 0</init_pose>
+        <shape> <pt>-0.08 -0.08</pt> <pt>-0.08 0.08</pt> <pt>0.08 0.08</pt> <pt>0.08 -0.08</pt> </shape>
+    </block>
+
+    <!-- Vehicle class -->
+    <include file="/opt/ros/humble/share/mvsim/definitions/small_robot.vehicle.xml" />
+
+    <!-- VEHICLES_PLACEHOLDER: replaced by launch file -->
+
+</mvsim_world>

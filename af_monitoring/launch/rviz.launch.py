@@ -6,6 +6,7 @@ Usage:
   ros2 launch af_monitoring rviz.launch.py mode:=slam
   ros2 launch af_monitoring rviz.launch.py mode:=perception
   ros2 launch af_monitoring rviz.launch.py mode:=full
+  ros2 launch af_monitoring rviz.launch.py mode:=swarm
 """
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
@@ -14,7 +15,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
-_VALID_MODES = ('navigation', 'slam', 'perception', 'full')
+_VALID_MODES = ('navigation', 'slam', 'perception', 'full', 'swarm')
 
 
 def _launch_setup(context):

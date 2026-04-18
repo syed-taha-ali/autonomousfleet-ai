@@ -1,0 +1,153 @@
+<?xml version="1.0" ?>
+<!--
+  Gazebo Classic 11 sensor and actuator plugins for the MentorPi M1.
+  Include this file ONLY in simulation launch (not on the real robot).
+  Uses planar_move for holonomic motion (true mecanum physics is not
+  available in Gazebo Classic).
+-->
+<robot name="mentorpi_gazebo_plugins" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:arg name="robot_namespace" default=""/>
+  <xacro:arg name="enable_camera" default="true"/>
+
+  <!-- ============================================================ -->
+  <!-- Holonomic drive via planar_move (accepts full Twist vx,vy,w) -->
+  <!-- ============================================================ -->
+  <gazebo>
+    <plugin name="planar_move" filename="libgazebo_ros_planar_move.so">
+      <ros>
+        <namespace>$(arg robot_namespace)</namespace>
+        <remapping>cmd_vel:=cmd_vel</remapping>
+        <remapping>odom:=odom</remapping>
+      </ros>
+      <update_rate>50</update_rate>
+      <publish_rate>50</publish_rate>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
+    </plugin>
+  </gazebo>
+
+  <!-- ============================================================ -->
+  <!-- LiDAR — matches MS200 specs: 360 deg, ~0.8 deg res, 12 m    -->
+  <!-- ============================================================ -->
+  <gazebo reference="lidar_frame">
+    <sensor type="ray" name="ms200_lidar">
+      <pose>0 0 0 0 0 0</pose>
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <visualize>false</visualize>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>450</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>12.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_lidar" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <namespace>$(arg robot_namespace)</namespace>
+          <remapping>~/out:=scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>lidar_frame</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ============================================================ -->
+  <!-- Camera — monocular RGB matching the USB cam on real robot    -->
+  <!-- Disabled via enable_camera:=false to avoid gzserver crash    -->
+  <!-- from libCameraPlugin.so missing dep in headless mode.        -->
+  <!-- ============================================================ -->
+  <xacro:if value="$(arg enable_camera)">
+  <gazebo reference="depth_cam">
+    <sensor type="camera" name="usb_camera">
+      <always_on>true</always_on>
+      <update_rate>15</update_rate>
+      <visualize>false</visualize>
+      <camera>
+        <horizontal_fov>1.047</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>8.0</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="gazebo_ros_camera" filename="libgazebo_ros_camera.so">
+        <ros>
+          <namespace>$(arg robot_namespace)</namespace>
+          <remapping>~/image_raw:=camera/image_raw</remapping>
+          <remapping>~/camera_info:=camera/camera_info</remapping>
+        </ros>
+        <frame_name>depth_cam</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+  </xacro:if>
+
+  <!-- ============================================================ -->
+  <!-- IMU sensor on base_link                                      -->
+  <!-- ============================================================ -->
+  <gazebo reference="imu_link">
+    <sensor type="imu" name="qmi8658_imu">
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <imu>
+        <angular_velocity>
+          <x><noise type="gaussian"><mean>0</mean><stddev>0.001</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0</mean><stddev>0.001</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0</mean><stddev>0.001</stddev></noise></z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x><noise type="gaussian"><mean>0</mean><stddev>0.01</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0</mean><stddev>0.01</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0</mean><stddev>0.01</stddev></noise></z>
+        </linear_acceleration>
+      </imu>
+      <plugin name="gazebo_ros_imu" filename="libgazebo_ros_imu_sensor.so">
+        <ros>
+          <namespace>$(arg robot_namespace)</namespace>
+          <remapping>~/out:=imu</remapping>
+        </ros>
+        <frame_name>imu_link</frame_name>
+        <initial_orientation_as_reference>false</initial_orientation_as_reference>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- Visual appearance: dark gray body, black wheels -->
+  <gazebo reference="base_link">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="wheel_lf_Link"><material>Gazebo/Black</material></gazebo>
+  <gazebo reference="wheel_rf_Link"><material>Gazebo/Black</material></gazebo>
+  <gazebo reference="wheel_lb_Link"><material>Gazebo/Black</material></gazebo>
+  <gazebo reference="wheel_rb_Link"><material>Gazebo/Black</material></gazebo>
+  <gazebo reference="lidar_frame"><material>Gazebo/Blue</material></gazebo>
+  <gazebo reference="depth_cam"><material>Gazebo/Red</material></gazebo>
+
+</robot>

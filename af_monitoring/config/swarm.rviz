@@ -1,0 +1,161 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Cell Size: 1
+      Color: 160; 160; 164
+      Line Style:
+        Line Width: 0.03
+        Value: Lines
+      Plane: XY
+      Plane Cell Count: 20
+      Reference Frame: <Fixed Frame>
+      Value: true
+
+    # Robot 0
+    - Class: rviz_default_plugins/RobotModel
+      Name: Robot 0
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot_0/robot_description
+      TF Prefix: robot_0
+    - Class: rviz_default_plugins/LaserScan
+      Name: Scan 0
+      Enabled: true
+      Topic:
+        Value: /robot_0/scan
+        Reliability Policy: Best Effort
+      Size (m): 0.03
+      Color Transformer: FlatColor
+      Color: 255; 85; 0
+    - Class: rviz_default_plugins/Odometry
+      Name: Odom 0
+      Enabled: true
+      Topic:
+        Value: /robot_0/odom
+      Keep: 50
+      Shape:
+        Value: Arrow
+      Arrow Length: 0.1
+      Color: 255; 85; 0
+    - Class: rviz_default_plugins/Map
+      Name: Map 0
+      Enabled: true
+      Topic:
+        Value: /robot_0/map
+        Durability Policy: Transient Local
+      Alpha: 0.5
+      Color Scheme: costmap
+
+    # Robot 1
+    - Class: rviz_default_plugins/RobotModel
+      Name: Robot 1
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot_1/robot_description
+      TF Prefix: robot_1
+    - Class: rviz_default_plugins/LaserScan
+      Name: Scan 1
+      Enabled: true
+      Topic:
+        Value: /robot_1/scan
+        Reliability Policy: Best Effort
+      Size (m): 0.03
+      Color Transformer: FlatColor
+      Color: 85; 255; 0
+    - Class: rviz_default_plugins/Odometry
+      Name: Odom 1
+      Enabled: true
+      Topic:
+        Value: /robot_1/odom
+      Keep: 50
+      Shape:
+        Value: Arrow
+      Arrow Length: 0.1
+      Color: 85; 255; 0
+    - Class: rviz_default_plugins/Map
+      Name: Map 1
+      Enabled: true
+      Topic:
+        Value: /robot_1/map
+        Durability Policy: Transient Local
+      Alpha: 0.5
+      Color Scheme: costmap
+
+    # Robot 2
+    - Class: rviz_default_plugins/RobotModel
+      Name: Robot 2
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot_2/robot_description
+      TF Prefix: robot_2
+    - Class: rviz_default_plugins/LaserScan
+      Name: Scan 2
+      Enabled: true
+      Topic:
+        Value: /robot_2/scan
+        Reliability Policy: Best Effort
+      Size (m): 0.03
+      Color Transformer: FlatColor
+      Color: 0; 85; 255
+    - Class: rviz_default_plugins/Odometry
+      Name: Odom 2
+      Enabled: true
+      Topic:
+        Value: /robot_2/odom
+      Keep: 50
+      Shape:
+        Value: Arrow
+      Arrow Length: 0.1
+      Color: 0; 85; 255
+    - Class: rviz_default_plugins/Map
+      Name: Map 2
+      Enabled: true
+      Topic:
+        Value: /robot_2/map
+        Durability Policy: Transient Local
+      Alpha: 0.5
+      Color Scheme: costmap
+
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/SetInitialPose
+      Topic:
+        Value: /initialpose
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Value: /goal_pose
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: TopDownOrtho
+      Near Clip Distance: 0.01
+      Scale: 50
+      Target Frame: <Fixed Frame>
+      Value: TopDownOrtho (rviz_default_plugins)
+      X: 0
+      Y: 0
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 900
+  Width: 1400
+  X: 100
+  Y: 100

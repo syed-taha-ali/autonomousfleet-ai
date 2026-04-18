@@ -1,0 +1,4 @@
+builtin_interfaces/Time stamp
+string robot_id
+geometry_msgs/Point frontier_centroid
+float32 utility_score
