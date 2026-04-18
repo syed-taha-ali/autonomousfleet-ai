@@ -31,6 +31,7 @@ class DetectionOverlayNode(Node):
         self._max_age = self.get_parameter('max_det_age_s').value
 
         self._latest_dets: Detection2DArray | None = None
+        self._last_det_time = None
 
         self.create_subscription(
             Detection2DArray, '/detections', self._on_dets, _BEST_EFFORT)
@@ -45,6 +46,7 @@ class DetectionOverlayNode(Node):
 
     def _on_dets(self, msg: Detection2DArray):
         self._latest_dets = msg
+        self._last_det_time = self.get_clock().now()
 
     def _on_image(self, msg: CompressedImage):
         buf = np.frombuffer(msg.data, dtype=np.uint8)
@@ -52,10 +54,8 @@ class DetectionOverlayNode(Node):
         if frame is None:
             return
 
-        if self._latest_dets is not None:
-            now = self.get_clock().now()
-            det_stamp = rclpy.time.Time.from_msg(self._latest_dets.header.stamp)
-            age = (now - det_stamp).nanoseconds / 1e9
+        if self._latest_dets is not None and self._last_det_time is not None:
+            age = (self.get_clock().now() - self._last_det_time).nanoseconds / 1e9
             if age < self._max_age:
                 self._draw(frame, self._latest_dets)
 

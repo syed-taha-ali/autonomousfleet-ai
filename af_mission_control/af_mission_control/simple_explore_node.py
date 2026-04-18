@@ -154,12 +154,15 @@ class SimpleExploreNode(Node):
 
     def _on_enable(self, msg: Bool):
         if msg.data and not self._enabled:
+            self._max_time = self.get_parameter('max_explore_time_s').value
+            self._max_distance = self.get_parameter('max_explore_distance_m').value
             self._enabled = True
             self._first_goal_time = 0.0
             self._distance_travelled = 0.0
             self._detected = False
             self._exit_reason = ''
-            self.get_logger().info('Explorer enabled via /explore/enable')
+            self.get_logger().info(
+                f'Explorer enabled (time={self._max_time}s, dist={self._max_distance}m)')
         elif not msg.data and self._enabled:
             self._stop('disabled via /explore/enable')
 
