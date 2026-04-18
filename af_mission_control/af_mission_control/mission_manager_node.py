@@ -7,16 +7,17 @@ to the find_object action server, Nav2, or other handlers. Publishes
 """
 import json
 import math
-import threading
 
 import rclpy
 from rclpy.action import ActionClient
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
+from rcl_interfaces.msg import Parameter, ParameterValue, ParameterType
+from rcl_interfaces.srv import SetParameters
 
 from action_msgs.srv import CancelGoal
 from geometry_msgs.msg import PoseStamped, Twist
-from nav2_msgs.action import NavigateToPose, FollowWaypoints
+from nav2_msgs.action import FollowWaypoints
 from std_msgs.msg import Bool
 
 from af_msgs.action import FindObject
@@ -48,19 +49,28 @@ class MissionManagerNode(Node):
             callback_group=self._cb_group,
         )
 
-        self._nav_client = ActionClient(
-            self, NavigateToPose, 'navigate_to_pose',
-            callback_group=self._cb_group,
-        )
-
         self._waypoint_client = ActionClient(
             self, FollowWaypoints, 'follow_waypoints',
             callback_group=self._cb_group,
         )
 
-        self._active_nav_handle = None
+        self._controller_set_params = self.create_client(
+            SetParameters, '/controller_server/set_parameters',
+            callback_group=self._cb_group,
+        )
+
+        self._explorer_set_params = self.create_client(
+            SetParameters, '/simple_explore/set_parameters',
+            callback_group=self._cb_group,
+        )
+
         self._active_find_handle = None
         self._drive_timer = None
+        self._drive_pub_timer = None
+        self._scan_timer = None
+
+        self._speed_linear = 0.2
+        self._speed_angular = 0.5
 
         self.get_logger().info('Mission manager ready (command router)')
 
@@ -102,11 +112,9 @@ class MissionManagerNode(Node):
 
         handler = {
             'find_object': self._dispatch_find_object,
-            'navigate_to': self._dispatch_navigate_to,
             'patrol': self._dispatch_patrol,
             'drive_for': self._dispatch_drive_for,
             'stop': self._dispatch_stop,
-            'return_home': self._dispatch_return_home,
             'set_speed': self._dispatch_set_speed,
             'scan_area': self._dispatch_scan_area,
             'explore': self._dispatch_scan_area,
@@ -166,32 +174,6 @@ class MissionManagerNode(Node):
             self._publish_status(mission_id, 'failed', 'find_object_aborted')
             self.get_logger().info('FindObject mission aborted — explorer disabled')
 
-    def _dispatch_navigate_to(self, params: dict, mission_id: str = ''):
-        if not self._nav_client.wait_for_server(timeout_sec=5.0):
-            self.get_logger().error('Nav2 not available')
-            return
-
-        pose = PoseStamped()
-        pose.header.frame_id = 'map'
-        pose.header.stamp = self.get_clock().now().to_msg()
-        pose.pose.position.x = float(params.get('x', 0.0))
-        pose.pose.position.y = float(params.get('y', 0.0))
-        pose.pose.orientation.w = 1.0
-
-        goal = NavigateToPose.Goal()
-        goal.pose = pose
-        future = self._nav_client.send_goal_async(goal)
-        future.add_done_callback(lambda f: self._on_nav_goal_response(f, mission_id))
-        self.get_logger().info(f'Nav goal sent: ({pose.pose.position.x:.2f}, {pose.pose.position.y:.2f})')
-
-    def _on_nav_goal_response(self, future, mission_id):
-        handle = future.result()
-        if not handle.accepted:
-            self.get_logger().warn('Nav goal rejected')
-            self._publish_status(mission_id, 'failed', 'goal_rejected')
-            return
-        self._active_nav_handle = handle
-
     def _dispatch_patrol(self, params: dict, mission_id: str = ''):
         waypoints = params.get('waypoints', [])
         if not waypoints:
@@ -230,18 +212,37 @@ class MissionManagerNode(Node):
 
     def _dispatch_drive_for(self, params: dict, mission_id: str = ''):
         direction = params.get('direction', 'forward')
-        speed = min(float(params.get('speed', 0.15)), 0.2)
-        duration = float(params.get('duration_s', 3.0))
 
-        vx_unit, vy_unit = self._DIRECTION_VECTORS.get(direction, (1.0, 0.0))
+        is_rotation = direction in ('rotate_left', 'rotate_right')
 
-        twist = Twist()
-        twist.linear.x = vx_unit * speed
-        twist.linear.y = vy_unit * speed
+        if is_rotation:
+            angular_speed = min(float(params.get('speed', self._speed_angular)), self._speed_angular)
+            angle_deg = params.get('angle_deg')
 
-        self.get_logger().info(
-            f'Drive {direction} at {speed:.2f} m/s for {duration:.1f}s '
-            f'(vx={twist.linear.x:.2f}, vy={twist.linear.y:.2f})')
+            if angle_deg is not None:
+                angle_rad = math.radians(float(angle_deg))
+                duration = abs(angle_rad) / angular_speed if angular_speed > 0 else 3.0
+            else:
+                duration = float(params.get('duration_s', 3.0))
+
+            twist = Twist()
+            twist.angular.z = angular_speed if direction == 'rotate_left' else -angular_speed
+
+            desc = f'angle={angle_deg}°' if angle_deg else f'duration={duration:.1f}s'
+            self.get_logger().info(
+                f'Rotate {direction} at {angular_speed:.2f} rad/s ({desc})')
+        else:
+            speed = min(float(params.get('speed', self._speed_linear)), self._speed_linear)
+            duration = float(params.get('duration_s', 3.0))
+            vx_unit, vy_unit = self._DIRECTION_VECTORS.get(direction, (1.0, 0.0))
+
+            twist = Twist()
+            twist.linear.x = vx_unit * speed
+            twist.linear.y = vy_unit * speed
+
+            self.get_logger().info(
+                f'Drive {direction} at {speed:.2f} m/s for {duration:.1f}s '
+                f'(vx={twist.linear.x:.2f}, vy={twist.linear.y:.2f})')
 
         self._drive_cmd = twist
         self._drive_pub_timer = self.create_timer(
@@ -266,16 +267,15 @@ class MissionManagerNode(Node):
     def _dispatch_stop(self, params: dict = None, mission_id: str = ''):
         self._cmd_vel_pub.publish(Twist())
 
-        if hasattr(self, '_drive_pub_timer') and self._drive_pub_timer is not None:
+        if self._drive_pub_timer is not None:
             self._drive_pub_timer.cancel()
             self._drive_pub_timer = None
         if self._drive_timer is not None:
             self._drive_timer.cancel()
             self._drive_timer = None
-
-        if self._active_nav_handle is not None:
-            self._active_nav_handle.cancel_goal_async()
-            self._active_nav_handle = None
+        if self._scan_timer is not None:
+            self._scan_timer.cancel()
+            self._scan_timer = None
 
         if self._active_find_handle is not None:
             self._active_find_handle.cancel_goal_async()
@@ -298,24 +298,122 @@ class MissionManagerNode(Node):
                 cancel_srv.call_async(req)
             cancel_srv.destroy()
 
-    def _dispatch_return_home(self, params: dict = None, mission_id: str = ''):
-        self._dispatch_navigate_to({'x': 0.0, 'y': 0.0}, mission_id)
-        self.get_logger().info('Return home: navigating to origin')
-
     def _dispatch_set_speed(self, params: dict, mission_id: str = ''):
+        new_linear = params.get('max_linear')
+        new_angular = params.get('max_angular')
+
+        if new_linear is not None:
+            self._speed_linear = min(float(new_linear), 0.3)
+        if new_angular is not None:
+            self._speed_angular = min(float(new_angular), 1.0)
+
         self.get_logger().info(
-            f'Speed limit request: linear={params.get("max_linear")}, '
-            f'angular={params.get("max_angular")} (runtime reconfigure not yet wired)'
-        )
+            f'Speed updated: linear={self._speed_linear:.2f} m/s, '
+            f'angular={self._speed_angular:.2f} rad/s')
+
+        self._reconfigure_nav2_speed()
+        self._publish_status(mission_id, 'done')
+
+    def _reconfigure_nav2_speed(self):
+        if not self._controller_set_params.wait_for_service(timeout_sec=2.0):
+            self.get_logger().warn('controller_server set_parameters not available')
+            return
+
+        params = []
+        for name, val in [
+            ('FollowPath.max_vel_x', self._speed_linear),
+            ('FollowPath.max_vel_y', self._speed_linear),
+            ('FollowPath.max_vel_theta', self._speed_angular),
+        ]:
+            p = Parameter()
+            p.name = name
+            p.value = ParameterValue()
+            p.value.type = ParameterType.PARAMETER_DOUBLE
+            p.value.double_value = val
+            params.append(p)
+
+        req = SetParameters.Request()
+        req.parameters = params
+        future = self._controller_set_params.call_async(req)
+        future.add_done_callback(self._on_speed_reconfigure_done)
+
+    def _on_speed_reconfigure_done(self, future):
+        try:
+            result = future.result()
+            ok = all(r.successful for r in result.results)
+            if ok:
+                self.get_logger().info('Nav2 speed reconfigured')
+            else:
+                reasons = [r.reason for r in result.results if not r.successful]
+                self.get_logger().warn(f'Nav2 speed reconfigure partial failure: {reasons}')
+        except Exception as e:
+            self.get_logger().warn(f'Nav2 speed reconfigure failed: {e}')
 
     def _dispatch_scan_area(self, params: dict, mission_id: str = ''):
-        max_time = float(params.get('max_time_s', 120.0))
-        self._dispatch_find_object({
-            'target_class': '__none__',
-            'max_duration_s': max_time,
-            'confidence_min': 0.99,
-        }, mission_id)
-        self.get_logger().info(f'Scan area: exploring for up to {max_time}s')
+        mode = params.get('mode')
+        if mode is None:
+            if 'max_distance_m' in params and params['max_distance_m']:
+                mode = 'distance'
+            elif 'max_time_s' in params and params['max_time_s']:
+                mode = 'timed'
+            else:
+                mode = 'timed'
+
+        if mode == 'timed':
+            max_time = float(params.get('max_time_s', 120.0))
+            max_distance = 0.0
+        elif mode == 'distance':
+            max_time = 0.0
+            max_distance = float(params.get('max_distance_m', 5.0))
+        else:
+            max_time = 0.0
+            max_distance = 0.0
+
+        self._configure_explorer(max_time=0.0, max_distance=max_distance)
+        self._explore_enable_pub.publish(Bool(data=True))
+
+        if max_time > 0:
+            def on_scan_timeout():
+                if self._scan_timer is not None:
+                    self._scan_timer.cancel()
+                    self._scan_timer = None
+                self._explore_enable_pub.publish(Bool(data=False))
+                self._cancel_all_nav2_goals()
+                self._cmd_vel_pub.publish(Twist())
+                self._publish_status(mission_id, 'done')
+                self.get_logger().info(f'Scan area complete (timeout {max_time}s)')
+
+            if self._scan_timer is not None:
+                self._scan_timer.cancel()
+            self._scan_timer = self.create_timer(
+                max_time, on_scan_timeout, callback_group=self._cb_group)
+
+        self.get_logger().info(
+            f'Scan area: mode={mode}, time={max_time}s, distance={max_distance}m')
+
+    def _configure_explorer(self, max_time: float, max_distance: float):
+        if not self._explorer_set_params.wait_for_service(timeout_sec=2.0):
+            self.get_logger().warn('Explorer set_parameters not available')
+            return
+
+        params = []
+        for name, val in [
+            ('max_explore_time_s', max_time),
+            ('max_explore_distance_m', max_distance),
+        ]:
+            p = Parameter()
+            p.name = name
+            p.value = ParameterValue()
+            p.value.type = ParameterType.PARAMETER_DOUBLE
+            p.value.double_value = val
+            params.append(p)
+
+        req = SetParameters.Request()
+        req.parameters = params
+        try:
+            self._explorer_set_params.call(req)
+        except Exception as e:
+            self.get_logger().warn(f'Explorer param set failed: {e}')
 
 
 def main(args=None):

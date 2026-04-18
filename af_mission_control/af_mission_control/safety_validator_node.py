@@ -17,11 +17,9 @@ from af_msgs.srv import ValidateCommand
 
 _ALLOWED_TYPES = frozenset([
     'find_object',
-    'navigate_to',
     'patrol',
     'drive_for',
     'stop',
-    'return_home',
     'set_speed',
     'scan_area',
     'explore',

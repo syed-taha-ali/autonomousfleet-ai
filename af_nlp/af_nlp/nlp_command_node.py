@@ -10,6 +10,7 @@ Runs on the Dev PC (not the Pi). Requires Ollama running locally.
 """
 import json
 import os
+import re
 import time
 import urllib.request
 import urllib.error
@@ -27,8 +28,7 @@ _TOOL_SCHEMA = [
             'name': 'find_object',
             'description': (
                 'Search the environment for a specific object. The robot will '
-                'explore autonomously, detect the object using its camera, and '
-                'return to its starting position once found.'
+                'explore autonomously and detect the object using its camera.'
             ),
             'parameters': {
                 'type': 'object',
@@ -57,49 +57,22 @@ _TOOL_SCHEMA = [
     {
         'type': 'function',
         'function': {
-            'name': 'navigate_to',
-            'description': (
-                'Navigate the robot to a specific location. Accepts either '
-                'coordinates (x, y in metres in the map frame) or a named '
-                'room/location from the known locations list.'
-            ),
-            'parameters': {
-                'type': 'object',
-                'properties': {
-                    'room_name': {
-                        'type': 'string',
-                        'description': 'Named location (e.g. "kitchen", "hallway"). Use this OR x/y coordinates.',
-                    },
-                    'x': {
-                        'type': 'number',
-                        'description': 'X coordinate in map frame (metres).',
-                    },
-                    'y': {
-                        'type': 'number',
-                        'description': 'Y coordinate in map frame (metres).',
-                    },
-                },
-            },
-        },
-    },
-    {
-        'type': 'function',
-        'function': {
             'name': 'patrol',
             'description': (
-                'Send the robot on a patrol route through a list of named '
-                'locations or coordinate waypoints, visiting each in order.'
+                'Send the robot on a patrol route through stored room locations, '
+                'visiting each in order. Rooms must be pre-configured in the '
+                'rooms file.'
             ),
             'parameters': {
                 'type': 'object',
                 'properties': {
-                    'waypoints': {
+                    'room_ids': {
                         'type': 'array',
                         'items': {'type': 'string'},
-                        'description': 'List of named locations to visit in order.',
+                        'description': 'List of room IDs to visit in order.',
                     },
                 },
-                'required': ['waypoints'],
+                'required': ['room_ids'],
             },
         },
     },
@@ -108,10 +81,9 @@ _TOOL_SCHEMA = [
         'function': {
             'name': 'drive_for',
             'description': (
-                'Drive the robot in a given direction at a given speed for a '
-                'specified duration, then stop. Use this when the user asks '
-                'the robot to move for a certain amount of time or in a '
-                'direction without a specific destination.'
+                'Drive or rotate the robot. For translation: specify a direction '
+                'and duration. For rotation: use rotate_left or rotate_right '
+                'with either a duration or an angle in degrees.'
             ),
             'parameters': {
                 'type': 'object',
@@ -122,19 +94,24 @@ _TOOL_SCHEMA = [
                             'forward', 'backward', 'left', 'right',
                             'forward_left', 'forward_right',
                             'backward_left', 'backward_right',
+                            'rotate_left', 'rotate_right',
                         ],
-                        'description': 'Direction to drive.',
+                        'description': 'Direction to drive or rotate.',
                     },
                     'speed': {
                         'type': 'number',
-                        'description': 'Speed in m/s (0.0-0.2). Default 0.15.',
+                        'description': 'Speed in m/s (0.0-0.2) for translation, or rad/s (0.0-1.0) for rotation. Default 0.15.',
                     },
                     'duration_s': {
                         'type': 'number',
-                        'description': 'How long to drive in seconds.',
+                        'description': 'How long to drive/rotate in seconds. Required unless angle_deg is set.',
+                    },
+                    'angle_deg': {
+                        'type': 'number',
+                        'description': 'Rotation angle in degrees. Only for rotate_left/rotate_right. Overrides duration_s.',
                     },
                 },
-                'required': ['direction', 'duration_s'],
+                'required': ['direction'],
             },
         },
     },
@@ -156,23 +133,11 @@ _TOOL_SCHEMA = [
     {
         'type': 'function',
         'function': {
-            'name': 'return_home',
-            'description': (
-                'Navigate the robot back to its starting/home position.'
-            ),
-            'parameters': {
-                'type': 'object',
-                'properties': {},
-            },
-        },
-    },
-    {
-        'type': 'function',
-        'function': {
             'name': 'set_speed',
             'description': (
-                'Set the maximum speed limits for the robot. Linear speed in '
-                'm/s (max 0.3), angular speed in rad/s (max 1.0).'
+                'Set the maximum speed limits for the robot. Affects all '
+                'movement commands including navigation and open-loop driving. '
+                'Linear speed in m/s (max 0.3), angular speed in rad/s (max 1.0).'
             ),
             'parameters': {
                 'type': 'object',
@@ -195,14 +160,25 @@ _TOOL_SCHEMA = [
             'name': 'scan_area',
             'description': (
                 'Explore and map the surrounding area. The robot will '
-                'autonomously navigate around the room to build a map.'
+                'autonomously navigate around the room. Stops in place when '
+                'done. Specify a time limit, distance limit, or use "full" '
+                'mode to scan until no unexplored areas remain.'
             ),
             'parameters': {
                 'type': 'object',
                 'properties': {
                     'max_time_s': {
                         'type': 'number',
-                        'description': 'Maximum exploration time in seconds. Default 120.',
+                        'description': 'Maximum exploration time in seconds.',
+                    },
+                    'max_distance_m': {
+                        'type': 'number',
+                        'description': 'Maximum exploration distance in metres.',
+                    },
+                    'mode': {
+                        'type': 'string',
+                        'enum': ['timed', 'distance', 'full'],
+                        'description': 'Exploration mode. "timed" uses max_time_s, "distance" uses max_distance_m, "full" scans until complete. Default "timed".',
                     },
                 },
             },
@@ -229,7 +205,7 @@ def _build_system_prompt(rooms: dict) -> str:
     room_lines = '\n'.join(
         f'  - {name}: ({p["x"]:.2f}, {p["y"]:.2f})'
         for name, p in rooms.items()
-    )
+    ) if rooms else '  (none configured)'
     return (
         'You are the command interface for an autonomous ground robot. '
         'The user gives natural-language instructions and you MUST translate '
@@ -241,13 +217,12 @@ def _build_system_prompt(rooms: dict) -> str:
         'and call the tool.\n'
         '- If the request seems dangerous, call stop().\n'
         '- For object search tasks, use find_object with the closest COCO class.\n'
-        '- For movement tasks, prefer named rooms when the user references a '
-        'location by name.\n'
         '- "stop", "halt", "freeze", "don\'t move", "emergency" → call stop().\n'
-        '- "come back", "go home", "return" → call return_home().\n'
         '- "explore", "look around", "scan", "map the area" → call scan_area().\n'
-        '- "patrol", "visit", "go around" with multiple locations → call patrol().\n\n'
-        f'Known locations:\n{room_lines}\n\n'
+        '- "patrol", "visit", "go around" with room names → call patrol().\n'
+        '- "turn left/right", "rotate" → call drive_for() with rotate_left/rotate_right.\n'
+        '- "slow down", "speed up", "set speed" → call set_speed().\n\n'
+        f'Available rooms for patrol:\n{room_lines}\n\n'
         f'Detectable object classes (COCO): {_COCO_CLASSES}\n'
     )
 
@@ -397,17 +372,13 @@ class NlpCommandNode(Node):
         lower = text.lower()
         scan_kw = ('scan', 'explore', 'map the', 'look around', 'survey')
         stop_kw = ('stop', 'halt', 'freeze', 'don\'t move', 'emergency')
-        home_kw = ('come back', 'go home', 'return home', 'come home')
 
         for kw in stop_kw:
             if kw in lower:
                 return ('stop', {})
-        for kw in home_kw:
-            if kw in lower:
-                return ('return_home', {})
         for kw in scan_kw:
             if kw in lower:
-                return ('scan_area', {'max_time_s': 120.0})
+                return ('scan_area', {'max_time_s': 120.0, 'mode': 'timed'})
         return None
 
     def _call_ollama(self, user_text: str) -> dict:
@@ -438,33 +409,43 @@ class NlpCommandNode(Node):
         cmd.priority = 1
         cmd.mission_id = f'nlp_{int(time.time())}'
 
-        if fn_name == 'navigate_to' and 'room_name' in fn_args:
-            room = fn_args['room_name']
-            if room in self._rooms:
-                fn_args['x'] = self._rooms[room]['x']
-                fn_args['y'] = self._rooms[room]['y']
-                del fn_args['room_name']
-            else:
-                self.get_logger().warn(f'Unknown room "{room}"')
-                self._publish_response(f'I don\'t know where "{room}" is.')
+        if fn_name == 'patrol':
+            room_ids = fn_args.get('room_ids', fn_args.get('waypoints', []))
+            if not self._rooms:
+                self._publish_response('No rooms configured. Store rooms first.')
                 return None
-
-        if fn_name == 'patrol' and 'waypoints' in fn_args:
             resolved = []
-            for wp in fn_args['waypoints']:
-                if wp in self._rooms:
-                    resolved.append({'x': self._rooms[wp]['x'], 'y': self._rooms[wp]['y']})
+            for rid in room_ids:
+                if rid in self._rooms:
+                    resolved.append({'x': self._rooms[rid]['x'], 'y': self._rooms[rid]['y']})
                 else:
-                    self.get_logger().warn(f'Unknown patrol waypoint "{wp}"')
-                    self._publish_response(f'I don\'t know where "{wp}" is.')
+                    self._publish_response(
+                        f'Unknown room "{rid}". Available: {", ".join(self._rooms.keys())}')
                     return None
             fn_args['waypoints'] = resolved
+            fn_args.pop('room_ids', None)
+
+        if fn_name == 'drive_for':
+            fn_args = self._fix_distance_params(fn_args, nl_text)
 
         if fn_name == 'stop':
             cmd.priority = 3
 
         cmd.parameters_json = json.dumps(fn_args)
         return cmd
+
+    def _fix_distance_params(self, args: dict, nl_text: str) -> dict:
+        _DIST_RE = re.compile(
+            r'(\d+(?:\.\d+)?)\s*(?:meters?|metres?|m\b)', re.IGNORECASE)
+        match = _DIST_RE.search(nl_text)
+        if not match:
+            return args
+        distance = float(match.group(1))
+        speed = float(args.get('speed', 0.15))
+        if speed <= 0:
+            speed = 0.15
+        args['duration_s'] = distance / speed
+        return args
 
     def _publish_response(self, text: str):
         msg = String()
