@@ -26,7 +26,8 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 import tf2_ros
 from geometry_msgs.msg import PoseStamped
 from nav2_msgs.action import NavigateToPose
-from std_msgs.msg import UInt16
+from nav_msgs.msg import Odometry
+from std_msgs.msg import Bool, UInt16
 from vision_msgs.msg import Detection2DArray
 
 from af_msgs.action import FindObject
@@ -71,6 +72,9 @@ class FindObjectActionNode(Node):
         self._return_nav_handle = None
         self._return_complete = False
         self._timed_out = False
+        self._explorer_paused = False
+        self._last_odom_x = None
+        self._last_odom_y = None
 
         # TF
         self._tf_buffer = tf2_ros.Buffer()
@@ -96,9 +100,14 @@ class FindObjectActionNode(Node):
             UInt16, '/ros_robot_controller/battery', self._on_battery, 10,
             callback_group=self._cb_group,
         )
+        self.create_subscription(
+            Odometry, '/odom', self._on_odom, 10,
+            callback_group=self._cb_group,
+        )
 
-        # Publisher
+        # Publishers
         self._status_pub = self.create_publisher(MissionStatus, '/mission/status', 10)
+        self._explore_enable_pub = self.create_publisher(Bool, '/explore/enable', 10)
 
         # Action server
         self._action_server = ActionServer(
@@ -144,11 +153,14 @@ class FindObjectActionNode(Node):
         self._mission_id = str(uuid.uuid4())[:8]
         self._start_time = time.monotonic()
         self._distance_travelled = 0.0
+        self._last_odom_x = None
+        self._last_odom_y = None
         self._detection_pose = PoseStamped()
         self._error_message = ''
         self._return_complete = False
         self._return_nav_handle = None
         self._timed_out = False
+        self._explorer_paused = False
 
         # CAPTURE_HOME
         self._set_state(State.CAPTURE_HOME)
@@ -158,10 +170,12 @@ class FindObjectActionNode(Node):
 
         # EXPLORING — driven by simple_explore_node running in parallel
         self._set_state(State.EXPLORING)
+        self._set_explorer_enabled(True)
         self.get_logger().info('Exploration active — waiting for target detection')
 
         while rclpy.ok():
             if goal_handle.is_cancel_requested:
+                self._set_explorer_enabled(False)
                 self._set_state(State.FAILED)
                 self._error_message = 'cancelled'
                 goal_handle.canceled()
@@ -173,6 +187,7 @@ class FindObjectActionNode(Node):
             if self._state == State.TARGET_CONFIRMED:
                 break
             if self._state == State.FAILED:
+                self._set_explorer_enabled(False)
                 goal_handle.abort()
                 return self._make_result(False, self._error_message)
 
@@ -252,6 +267,20 @@ class FindObjectActionNode(Node):
         self._vote_window.append(hit)
         votes = sum(self._vote_window)
 
+        # Pause explorer once votes reach votes_required-1 so the robot has
+        # already started moving before we stop it, and single-frame false
+        # positives don't freeze exploration immediately.
+        if votes >= (self._votes_required - 1) and not self._explorer_paused:
+            self._set_explorer_enabled(False)
+            self.get_logger().info(
+                f'Detection building — pausing explorer to accumulate votes '
+                f'({votes}/{self._votes_required})'
+            )
+        # Resume explorer if votes fall below the pause threshold (object lost)
+        elif self._explorer_paused and votes < (self._votes_required - 1):
+            self._set_explorer_enabled(True)
+            self.get_logger().info(f'Votes dropped to {votes} — resuming explorer')
+
         if votes >= self._votes_required:
             self.get_logger().info(
                 f'Target "{self._target_class}" confirmed '
@@ -259,6 +288,12 @@ class FindObjectActionNode(Node):
             )
             self._capture_detection_pose()
             self._set_state(State.TARGET_CONFIRMED)
+
+    def _set_explorer_enabled(self, enabled: bool):
+        self._explorer_paused = not enabled
+        msg = Bool()
+        msg.data = enabled
+        self._explore_enable_pub.publish(msg)
 
     def _capture_detection_pose(self):
         try:
@@ -294,6 +329,16 @@ class FindObjectActionNode(Node):
 
     def _on_battery(self, msg: UInt16):
         self._last_voltage = msg.data / 1000.0
+
+    def _on_odom(self, msg: Odometry):
+        x = msg.pose.pose.position.x
+        y = msg.pose.pose.position.y
+        if self._last_odom_x is not None and self._state not in (State.IDLE, State.DONE, State.FAILED):
+            dx = x - self._last_odom_x
+            dy = y - self._last_odom_y
+            self._distance_travelled += math.sqrt(dx * dx + dy * dy)
+        self._last_odom_x = x
+        self._last_odom_y = y
 
     # ── Navigation ─────────────────────────────────────────────────
 

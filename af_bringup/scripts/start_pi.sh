@@ -12,11 +12,11 @@
 #
 # The launch log is written to /tmp/explore.log inside the container.
 # Monitor it with:
-#   ssh pi@192.168.1.117 "docker exec -u ubuntu MentorPi tail -f /tmp/explore.log"
+#   ssh pi@192.168.149.1 "docker exec -u ubuntu MentorPi tail -f /tmp/explore.log"
 
 set -euo pipefail
 
-PI_HOST="${PI_HOST:-pi@192.168.1.117}"
+PI_HOST="${PI_HOST:-pi@192.168.149.1}"
 CONTAINER="${CONTAINER:-MentorPi}"
 LAUNCH_ARGS="${*:-}"
 

@@ -60,7 +60,7 @@ class SimpleExploreNode(Node):
         self._target_class = self.get_parameter('target_class').value
         self._det_conf_min = self.get_parameter('detection_confidence_min').value
 
-        self.declare_parameter('start_enabled', True)
+        self.declare_parameter('start_enabled', False)
 
         self._map_data = None
         self._map_info = None

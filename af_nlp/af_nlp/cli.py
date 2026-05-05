@@ -10,12 +10,13 @@ are printed as they arrive.
 """
 import readline
 import threading
+import time
 
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 
-from af_msgs.msg import MissionCommand
+from af_msgs.msg import MissionCommand, MissionStatus
 
 
 _EXAMPLES_TABLE = """
@@ -50,6 +51,19 @@ _EXAMPLES_TABLE = """
 """.strip()
 
 
+_STATE_LABELS = {
+    'idle':             'Idle — waiting for command',
+    'capture_home':     'Capturing home position...',
+    'exploring':        'Exploring',
+    'target_confirmed': 'Target confirmed — stopping exploration',
+    'return_home':      'Navigating home...',
+    'done':             'Mission complete',
+    'failed':           'Mission failed',
+}
+
+_ACTIVE_STATES = {'capture_home', 'exploring', 'target_confirmed', 'return_home'}
+
+
 class NlpCli(Node):
     def __init__(self):
         super().__init__('nlp_cli')
@@ -57,16 +71,54 @@ class NlpCli(Node):
         self.create_subscription(String, '/nlp/response', self._on_response, 10)
         self.create_subscription(String, '/nlp/clarification_needed', self._on_clarify, 10)
         self.create_subscription(MissionCommand, '/mission/command', self._on_cmd, 10)
+        self.create_subscription(MissionStatus, '/mission/status', self._on_status, 10)
+        self._last_state = ''
+        self._last_explore_print = 0.0
+        self._in_find_mission = False
 
     def _on_response(self, msg):
         if msg.data:
-            print(f'\n  [LLM] {msg.data}')
+            print(f'\n  [LLM] {msg.data}', flush=True)
 
     def _on_clarify(self, msg):
-        print(f'\n  [???] {msg.data}')
+        print(f'\n  [???] {msg.data}', flush=True)
 
     def _on_cmd(self, msg):
-        print(f'  [CMD] {msg.command_type} → {msg.parameters_json}')
+        print(f'  [CMD] {msg.command_type} → {msg.parameters_json}', flush=True)
+
+    def _on_status(self, msg: MissionStatus):
+        state = msg.state
+
+        if state == 'capture_home':
+            self._in_find_mission = True
+        elif state in ('idle',):
+            self._in_find_mission = False
+
+        if not self._in_find_mission:
+            return
+
+        changed = state != self._last_state
+        if changed:
+            self._last_state = state
+            label = _STATE_LABELS.get(state, state)
+
+            if state == 'failed':
+                reason = msg.error_message or 'unknown'
+                print(f'\n  [STATUS] {label}: {reason}', flush=True)
+                self._in_find_mission = False
+            elif state == 'done':
+                print(f'\n  [STATUS] {label} — {msg.elapsed_s:.0f}s, {msg.distance_travelled_m:.1f}m', flush=True)
+                self._in_find_mission = False
+            elif state in _ACTIVE_STATES:
+                print(f'\n  [STATUS] {label}', flush=True)
+            self._last_explore_print = 0.0
+
+        if state == 'exploring':
+            now = time.monotonic()
+            if now - self._last_explore_print >= 5.0:
+                self._last_explore_print = now
+                print(f'  [STATUS] Exploring — {msg.elapsed_s:.0f}s elapsed, '
+                      f'{msg.distance_travelled_m:.1f}m travelled', flush=True)
 
     def send(self, text):
         m = String()

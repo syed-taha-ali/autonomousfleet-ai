@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-PI_HOST="${PI_HOST:-pi@192.168.1.117}"
+PI_HOST="${PI_HOST:-pi@192.168.149.1}"
 CONTAINER="${CONTAINER:-MentorPi}"
 
 echo "[stop_pi] Killing all ROS processes on ${PI_HOST}..."

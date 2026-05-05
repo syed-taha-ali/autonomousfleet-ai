@@ -14,12 +14,12 @@ kill, repeat.
 
 ### 1.1 Passwordless SSH → Docker exec
 
-The robot lives at `pi@192.168.1.117` on the LAN (STA mode). ROS 2 runs only
+The robot lives at `pi@192.168.149.1` on the HiWonder AP hotspot (AP mode). ROS 2 runs only
 inside the `MentorPi` Docker container. The canonical one-liner from the Dev
 PC:
 
 ```bash
-ssh pi@192.168.1.117 'docker exec -u ubuntu -w /home/ubuntu MentorPi \
+ssh pi@192.168.149.1 'docker exec -u ubuntu -w /home/ubuntu MentorPi \
     bash -lc "source /opt/ros/humble/setup.bash && \
     source /home/ubuntu/third_party_ros2/third_party_ws/install/local_setup.bash && \
     source /home/ubuntu/workspace/ros2_ws/install/local_setup.bash && \

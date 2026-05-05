@@ -30,6 +30,14 @@ class StatusCollector(Node):
             FleetStatus, '/fleet/status', self._on_status, 10)
 
     def _on_status(self, msg):
+        # Reject stale messages from a prior trial's orphan coordinator:
+        # FleetStatus reports elapsed_s counted inside the coordinator, so
+        # a fresh trial must have elapsed_s roughly aligned with wall time
+        # since reset. A message whose elapsed_s leads wall-clock by >30 s
+        # is from a leaked publisher and must be ignored.
+        wall_since_reset = time.time() - self._t0
+        if msg.elapsed_s > wall_since_reset + 30.0:
+            return
         self._latest = msg
         self.samples.append({
             't': time.time() - self._t0,
@@ -47,6 +55,22 @@ class StatusCollector(Node):
 
 
 def run_trial(collector, num_robots, timeout, ros_setup):
+    # Kill any stragglers from a previous trial — an orphan swarm_coordinator
+    # republishing 'done' over TRANSIENT_LOCAL QoS will make the new trial
+    # break out immediately on the latched stale sample.
+    subprocess.run(
+        ['bash', '-c',
+         "pkill -9 -f swarm_coordinator; pkill -9 -f object_registry; "
+         "pkill -9 -f distributed_explore; pkill -9 -f ground_truth; "
+         "pkill -9 -f mvsim_node; pkill -9 -f slam_toolbox; "
+         "pkill -9 -f controller_server; pkill -9 -f planner_server; "
+         "pkill -9 -f bt_navigator; pkill -9 -f behavior_server; "
+         "pkill -9 -f lifecycle_manager; pkill -9 -f amcl; "
+         "pkill -9 -f map_server; pkill -9 -f velocity_smoother; "
+         "pkill -9 -f waypoint_follower; pkill -9 -f smoother_server; "
+         "sleep 2"],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
     sim_cmd = (
         f'source {ros_setup} && '
         f'ros2 launch af_sim simulation_mvsim.launch.py '
