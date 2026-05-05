@@ -1,0 +1,12 @@
+stdin is not a terminal device. Keyboard handling disabled.[INFO] [1776536064.623297834] [rosbag2_recorder]: Press SPACE for pausing/resuming
+[INFO] [1776536064.624704265] [rosbag2_storage]: Opened database 'g3_perimeter_bag/g3_perimeter_bag_0.db3' for READ_WRITE.
+[INFO] [1776536064.625236911] [rosbag2_recorder]: Listening for topics...
+[INFO] [1776536064.625247891] [rosbag2_recorder]: Event publisher thread: Starting
+[INFO] [1776536064.625402440] [rosbag2_recorder]: Recording...
+[INFO] [1776536067.844656692] [rosbag2_recorder]: Subscribed to topic '/amcl_pose'
+[INFO] [1776536067.846670759] [rosbag2_recorder]: Subscribed to topic '/cmd_vel'
+[INFO] [1776536067.849195933] [rosbag2_recorder]: Subscribed to topic '/scan'
+[INFO] [1776536067.849215903] [rosbag2_recorder]: All requested topics are subscribed. Stopping discovery...
+[INFO] [1776536326.895420133] [rosbag2_cpp]: Writing remaining messages from cache to the bag. It may take a while
+[INFO] [1776536326.896136480] [rosbag2_recorder]: Event publisher thread: Exiting
+[INFO] [1776536326.896172980] [rosbag2_recorder]: Recording stopped

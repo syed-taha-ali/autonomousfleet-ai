@@ -1,0 +1,37 @@
+[00] dist=1.0m  expect_dur=6.7s  raw=1.0  regex=6.666666666666667  raw_ok=False  regex_ok=True   "drive forward 1 metre"
+[01] wrong tool: None  "drive forward 1 meter"
+[02] dist=2.0m  expect_dur=13.3s  raw=6.67  regex=6.666666666666667  raw_ok=False  regex_ok=False   "move forward 2 metres"
+[03] dist=0.5m  expect_dur=3.3s  raw=1.67  regex=1.6666666666666667  raw_ok=False  regex_ok=False   "go forward 0.5 metres"
+[04] dist=0.5m  expect_dur=3.3s  raw=2.0  regex=2.0  raw_ok=False  regex_ok=False   "drive backward half a metre"
+[05] dist=1.0m  expect_dur=6.7s  raw=1.0  regex=6.666666666666667  raw_ok=False  regex_ok=True   "back up 1 m"
+[06] dist=1.5m  expect_dur=10.0s  raw=1.5  regex=10.0  raw_ok=False  regex_ok=True   "back up 1.5 metres"
+[07] wrong tool: None  "strafe left 1 metre"
+[08] dist=0.75m  expect_dur=5.0s  raw=0.75  regex=5.0  raw_ok=False  regex_ok=True   "strafe right 0.75 metres"
+[09] wrong tool: None  "move left 2 m"
+[10] dist=0.5m  expect_dur=3.3s  raw=2.5  regex=2.5  raw_ok=False  regex_ok=False   "move right half a meter"
+[11] wrong tool: None  "inch forward 0.25 metres"
+[12] dist=0.3m  expect_dur=2.0s  raw=1.0  regex=1.0  raw_ok=False  regex_ok=False   "creep forward 0.3 m"
+[13] dist=1.0m  expect_dur=6.7s  raw=1.0  regex=6.666666666666667  raw_ok=False  regex_ok=True   "roll forward 1 metre"
+[14] dist=1.0m  expect_dur=6.7s  raw=1.0  regex=1.0  raw_ok=False  regex_ok=False   "go ahead one metre"
+[15] dist=1.2m  expect_dur=8.0s  raw=1.2  regex=8.0  raw_ok=False  regex_ok=True   "advance 1.2 metres"
+[16] wrong tool: None  "reverse 0.8 m"
+[17] dist=1.5m  expect_dur=10.0s  raw=1.5  regex=1.5  raw_ok=False  regex_ok=False   "reverse one and a half metres"
+[18] dist=3.0m  expect_dur=20.0s  raw=3.0  regex=3.0  raw_ok=False  regex_ok=False   "drive forward three metres"
+[19] dist=2.0m  expect_dur=13.3s  raw=2.0  regex=2.0  raw_ok=False  regex_ok=False   "drive backward two metres"
+[20] dist=0.5m  expect_dur=3.3s  raw=2.0  regex=2.0  raw_ok=False  regex_ok=False   "go forward 50 centimetres"
+[21] dist=1.0m  expect_dur=6.7s  raw=3.0  regex=3.0  raw_ok=False  regex_ok=False   "drive forward 100 cm"
+[22] dist=2.5m  expect_dur=16.7s  raw=10.0  regex=10.0  raw_ok=False  regex_ok=False   "move forward 2.5 metres"
+[23] dist=0.1m  expect_dur=0.7s  raw=0.5  regex=1.0  raw_ok=False  regex_ok=False   "nudge forward 0.1 m"
+[24] wrong tool: None  "drive forward for a distance of 1 metre"
+[25] dist=2.0m  expect_dur=13.3s  raw=2.0  regex=13.333333333333334  raw_ok=False  regex_ok=True   "travel 2 metres forward"
+[26] dist=0.4m  expect_dur=2.7s  raw=2.0  regex=2.666666666666667  raw_ok=False  regex_ok=True   "shift right 0.4 metres"
+[27] dist=0.6m  expect_dur=4.0s  raw=0.6  regex=4.0  raw_ok=False  regex_ok=True   "shuffle left 0.6 m"
+[28] wrong tool: None  "move backward 0.9 metres"
+[29] dist=1.0m  expect_dur=6.7s  raw=1.0  regex=6.666666666666667  raw_ok=False  regex_ok=True   "please drive ahead exactly 1 metre"
+
+wrote /home/taha/ros2_ws/src/project/report/data/regex_ablation.csv
+
+Summary (tol ±15 %, speed=0.15 m/s, n=30):
+  raw LLM:           0/30 (0 %)
+  + regex corrector: 10/30 (33 %)
+wrote /home/taha/ros2_ws/src/project/report/figures/regex_ablation_bar.png

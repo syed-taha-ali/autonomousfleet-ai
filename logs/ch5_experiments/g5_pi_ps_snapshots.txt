@@ -1,0 +1,48 @@
+    PID COMMAND         %CPU %MEM
+  35899 find_object_act 21.5  1.7
+  35942 depth_estimator 14.2  3.1
+  35940 yolo_onnx_node  13.5  4.5
+  35968 simple_explore_ 11.5  1.6
+  31721 ekf_n <defunct>  8.3  0.0
+  35801 bt_navigator     7.6  1.1
+  35793 controller_serv  6.4  1.0
+  35807 lifecycle_manag  5.8  0.7
+  35150 ekf_node         5.7  0.8
+  35136 imu_calib_node   5.5  1.5
+  35799 behavior_server  5.5  0.9
+  35797 planner_server   5.4  1.0
+  30694 imu_c <defunct>  4.8  0.0
+  31711 imu_c <defunct>  4.8  0.0
+---SEP---
+    PID COMMAND         %CPU %MEM
+  35899 find_object_act 21.5  1.7
+  35942 depth_estimator 14.2  3.1
+  35940 yolo_onnx_node  13.6  4.5
+  35968 simple_explore_ 11.4  1.6
+  31721 ekf_n <defunct>  8.3  0.0
+  35801 bt_navigator     7.5  1.1
+  35793 controller_serv  6.4  1.0
+  35807 lifecycle_manag  5.8  0.7
+  35150 ekf_node         5.7  0.8
+  35136 imu_calib_node   5.5  1.5
+  35799 behavior_server  5.5  0.9
+  35797 planner_server   5.4  1.0
+  30694 imu_c <defunct>  4.8  0.0
+  31711 imu_c <defunct>  4.8  0.0
+---SEP---
+    PID COMMAND         %CPU %MEM
+  35899 find_object_act 21.4  1.7
+  35942 depth_estimator 14.2  3.1
+  35940 yolo_onnx_node  13.7  4.5
+  35968 simple_explore_ 11.4  1.6
+  31721 ekf_n <defunct>  8.3  0.0
+  35801 bt_navigator     7.5  1.1
+  35793 controller_serv  6.4  1.0
+  35807 lifecycle_manag  5.8  0.7
+  35150 ekf_node         5.7  0.8
+  35136 imu_calib_node   5.5  1.5
+  35799 behavior_server  5.5  0.9
+  35797 planner_server   5.4  1.0
+  31711 imu_c <defunct>  4.8  0.0
+  35131 ros_robot_contr  4.8  1.6
+---SEP---

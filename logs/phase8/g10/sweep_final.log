@@ -1,0 +1,180 @@
+=== N=1 trial=1 23:16:04 ===
+
+=== Exploration benchmark: 1 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 303 samples
+  Objects: 2/5
+  Coverage: 62.4%
+  Elapsed: 303s
+  Final state: returning
+
+CSV saved: /tmp/g10_t1_n1_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t1_n1_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=2 trial=1 23:21:54 ===
+
+=== Exploration benchmark: 2 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 303 samples
+  Objects: 3/5
+  Coverage: 87.8%
+  Elapsed: 303s
+  Final state: returning
+
+CSV saved: /tmp/g10_t1_n2_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t1_n2_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=3 trial=1 23:27:44 ===
+
+=== Exploration benchmark: 3 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 301 samples
+  Objects: 5/5
+  Coverage: 88.1%
+  Elapsed: 301s
+  Final state: returning
+
+CSV saved: /tmp/g10_t1_n3_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t1_n3_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=5 trial=1 23:33:33 ===
+
+=== Exploration benchmark: 5 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 303 samples
+  Objects: 3/5
+  Coverage: 29.0%
+  Elapsed: 303s
+  Final state: returning
+
+CSV saved: /tmp/g10_t1_n5_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t1_n5_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=1 trial=2 23:39:24 ===
+
+=== Exploration benchmark: 1 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 303 samples
+  Objects: 3/5
+  Coverage: 86.6%
+  Elapsed: 303s
+  Final state: returning
+
+CSV saved: /tmp/g10_t2_n1_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t2_n1_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=2 trial=2 23:45:14 ===
+
+=== Exploration benchmark: 2 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 301 samples
+  Objects: 2/5
+  Coverage: 94.4%
+  Elapsed: 301s
+  Final state: returning
+
+CSV saved: /tmp/g10_t2_n2_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t2_n2_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=3 trial=2 23:51:02 ===
+
+=== Exploration benchmark: 3 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 303 samples
+  Objects: 1/5
+  Coverage: 5.3%
+  Elapsed: 303s
+  Final state: returning
+
+CSV saved: /tmp/g10_t2_n3_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t2_n3_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=5 trial=2 23:56:52 ===
+
+=== Exploration benchmark: 5 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 303 samples
+  Objects: 3/5
+  Coverage: 31.0%
+  Elapsed: 303s
+  Final state: returning
+
+CSV saved: /tmp/g10_t2_n5_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t2_n5_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=1 trial=3 00:02:43 ===
+
+=== Exploration benchmark: 1 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 301 samples
+  Objects: 3/5
+  Coverage: 91.3%
+  Elapsed: 301s
+  Final state: returning
+
+CSV saved: /tmp/g10_t3_n1_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t3_n1_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=2 trial=3 00:08:31 ===
+
+=== Exploration benchmark: 2 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 303 samples
+  Objects: 3/5
+  Coverage: 85.7%
+  Elapsed: 303s
+  Final state: returning
+
+CSV saved: /tmp/g10_t3_n2_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t3_n2_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=3 trial=3 00:14:21 ===
+
+=== Exploration benchmark: 3 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 303 samples
+  Objects: 3/5
+  Coverage: 52.0%
+  Elapsed: 303s
+  Final state: returning
+
+CSV saved: /tmp/g10_t3_n3_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t3_n3_final/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=5 trial=3 00:20:12 ===
+
+=== Exploration benchmark: 5 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 303 samples
+  Objects: 4/5
+  Coverage: 33.8%
+  Elapsed: 303s
+  Final state: returning
+
+CSV saved: /tmp/g10_t3_n5_final/explore_benchmark.csv
+Plot saved: /tmp/g10_t3_n5_final/explore_benchmark.png
+
+Exploration benchmark complete.

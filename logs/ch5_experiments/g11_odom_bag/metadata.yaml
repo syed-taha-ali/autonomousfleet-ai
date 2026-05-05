@@ -1,0 +1,45 @@
+rosbag2_bagfile_information:
+  version: 5
+  storage_identifier: sqlite3
+  duration:
+    nanoseconds: 485719323316
+  starting_time:
+    nanoseconds_since_epoch: 1776534237602765679
+  message_count: 71064
+  topics_with_message_count:
+    - topic_metadata:
+        name: /odom_raw
+        type: nav_msgs/msg/Odometry
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 2\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 23327
+    - topic_metadata:
+        name: /odom
+        type: nav_msgs/msg/Odometry
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 2\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 24217
+    - topic_metadata:
+        name: /imu
+        type: sensor_msgs/msg/Imu
+        serialization_format: cdr
+        offered_qos_profiles: "- history: 3\n  depth: 0\n  reliability: 1\n  durability: 2\n  deadline:\n    sec: 9223372036\n    nsec: 854775807\n  lifespan:\n    sec: 9223372036\n    nsec: 854775807\n  liveliness: 1\n  liveliness_lease_duration:\n    sec: 9223372036\n    nsec: 854775807\n  avoid_ros_namespace_conventions: false"
+      message_count: 23520
+  compression_format: ""
+  compression_mode: ""
+  relative_file_paths:
+    - g11_odom_bag_0.db3
+    - g11_odom_bag_1.db3
+  files:
+    - path: g11_odom_bag_0.db3
+      starting_time:
+        nanoseconds_since_epoch: 1776534237602765679
+      duration:
+        nanoseconds: 309997349348
+      message_count: 45345
+    - path: g11_odom_bag_1.db3
+      starting_time:
+        nanoseconds_since_epoch: 1776534547604043430
+      duration:
+        nanoseconds: 175718045565
+      message_count: 25719

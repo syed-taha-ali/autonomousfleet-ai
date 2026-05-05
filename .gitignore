@@ -28,6 +28,12 @@ __pycache__/
 # Rosbag recordings
 rosbags/
 
+# YOLO training/validation output
+runs/
+
+# Local scratch files
+setup.txt
+
 # Editor
 .vscode/
 .idea/

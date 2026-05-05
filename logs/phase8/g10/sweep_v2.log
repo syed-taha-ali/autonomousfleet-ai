@@ -1,0 +1,19 @@
+=== N=1 trial=1 22:06:47 ===
+
+=== Exploration benchmark: 1 robot(s) ===
+  Running for up to 300s...
+  Timeout reached
+  Collected 301 samples
+  Objects: 3/5
+  Coverage: 91.0%
+  Elapsed: 301s
+  Final state: returning
+
+CSV saved: /tmp/g10_t1_n1_v2/explore_benchmark.csv
+Plot saved: /tmp/g10_t1_n1_v2/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=2 trial=1 22:12:35 ===
+
+=== Exploration benchmark: 2 robot(s) ===
+  Running for up to 300s...

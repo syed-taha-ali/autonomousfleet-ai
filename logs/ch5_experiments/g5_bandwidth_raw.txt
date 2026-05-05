@@ -1,0 +1,372 @@
+--- /camera/image_raw/compressed ---
+Subscribed to [/camera/image_raw/compressed]
+1.09 MB/s from 7 messages
+	Message size mean: 0.07 MB min: 0.07 MB max: 0.07 MB
+821.15 KB/s from 17 messages
+	Message size mean: 69.96 KB min: 69.69 KB max: 70.33 KB
+771.07 KB/s from 27 messages
+	Message size mean: 69.92 KB min: 69.58 KB max: 70.33 KB
+750.10 KB/s from 37 messages
+	Message size mean: 69.91 KB min: 69.58 KB max: 70.33 KB
+738.62 KB/s from 47 messages
+	Message size mean: 69.91 KB min: 69.58 KB max: 70.33 KB
+731.50 KB/s from 57 messages
+	Message size mean: 69.92 KB min: 69.58 KB max: 70.33 KB
+726.70 KB/s from 67 messages
+	Message size mean: 69.94 KB min: 69.58 KB max: 70.33 KB
+723.25 KB/s from 77 messages
+	Message size mean: 69.96 KB min: 69.58 KB max: 70.34 KB
+720.47 KB/s from 87 messages
+	Message size mean: 69.96 KB min: 69.58 KB max: 70.34 KB
+718.45 KB/s from 97 messages
+	Message size mean: 69.98 KB min: 69.58 KB max: 70.34 KB
+706.19 KB/s from 100 messages
+	Message size mean: 70.00 KB min: 69.58 KB max: 70.34 KB
+706.34 KB/s from 100 messages
+	Message size mean: 70.01 KB min: 69.58 KB max: 70.34 KB
+706.31 KB/s from 100 messages
+	Message size mean: 70.03 KB min: 69.72 KB max: 70.34 KB
+706.70 KB/s from 100 messages
+	Message size mean: 70.05 KB min: 69.72 KB max: 70.34 KB
+706.93 KB/s from 100 messages
+	Message size mean: 70.07 KB min: 69.72 KB max: 70.34 KB
+706.78 KB/s from 100 messages
+	Message size mean: 70.08 KB min: 69.72 KB max: 70.34 KB
+707.00 KB/s from 100 messages
+	Message size mean: 70.08 KB min: 69.77 KB max: 70.34 KB
+706.99 KB/s from 100 messages
+	Message size mean: 70.07 KB min: 69.77 KB max: 70.30 KB
+706.73 KB/s from 100 messages
+	Message size mean: 70.08 KB min: 69.76 KB max: 70.30 KB
+706.89 KB/s from 100 messages
+	Message size mean: 70.06 KB min: 69.71 KB max: 70.30 KB
+706.65 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.71 KB max: 70.30 KB
+706.42 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.71 KB max: 70.30 KB
+706.52 KB/s from 100 messages
+	Message size mean: 70.03 KB min: 69.71 KB max: 70.30 KB
+706.71 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.71 KB max: 70.30 KB
+706.56 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.71 KB max: 70.30 KB
+706.66 KB/s from 100 messages
+	Message size mean: 70.03 KB min: 69.71 KB max: 70.36 KB
+706.58 KB/s from 100 messages
+	Message size mean: 70.03 KB min: 69.71 KB max: 70.36 KB
+706.36 KB/s from 100 messages
+	Message size mean: 70.03 KB min: 69.71 KB max: 70.36 KB
+706.65 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.71 KB max: 70.39 KB
+706.66 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.73 KB max: 70.39 KB
+706.64 KB/s from 100 messages
+	Message size mean: 70.05 KB min: 69.73 KB max: 70.39 KB
+706.75 KB/s from 100 messages
+	Message size mean: 70.05 KB min: 69.76 KB max: 70.39 KB
+706.74 KB/s from 100 messages
+	Message size mean: 70.05 KB min: 69.76 KB max: 70.39 KB
+706.59 KB/s from 100 messages
+	Message size mean: 70.05 KB min: 69.76 KB max: 70.39 KB
+706.72 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.76 KB max: 70.39 KB
+706.72 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.76 KB max: 70.39 KB
+706.31 KB/s from 100 messages
+	Message size mean: 70.03 KB min: 69.63 KB max: 70.39 KB
+706.61 KB/s from 100 messages
+	Message size mean: 70.01 KB min: 69.63 KB max: 70.39 KB
+706.39 KB/s from 100 messages
+	Message size mean: 70.02 KB min: 69.63 KB max: 70.30 KB
+706.30 KB/s from 100 messages
+	Message size mean: 70.02 KB min: 69.63 KB max: 70.31 KB
+706.58 KB/s from 100 messages
+	Message size mean: 70.03 KB min: 69.63 KB max: 70.63 KB
+706.58 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.63 KB max: 70.63 KB
+706.47 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.63 KB max: 70.63 KB
+706.78 KB/s from 100 messages
+	Message size mean: 70.05 KB min: 69.63 KB max: 70.63 KB
+706.61 KB/s from 100 messages
+	Message size mean: 70.04 KB min: 69.63 KB max: 70.63 KB
+706.49 KB/s from 100 messages
+	Message size mean: 70.05 KB min: 69.63 KB max: 70.63 KB
+706.93 KB/s from 100 messages
+	Message size mean: 70.06 KB min: 69.63 KB max: 70.63 KB
+707.09 KB/s from 100 messages
+	Message size mean: 70.08 KB min: 69.80 KB max: 70.63 KB
+706.99 KB/s from 100 messages
+	Message size mean: 70.09 KB min: 69.80 KB max: 70.63 KB
+707.16 KB/s from 100 messages
+	Message size mean: 70.09 KB min: 69.80 KB max: 70.63 KB
+707.20 KB/s from 100 messages
+	Message size mean: 70.09 KB min: 69.80 KB max: 70.46 KB
+707.29 KB/s from 100 messages
+	Message size mean: 70.09 KB min: 69.80 KB max: 70.53 KB
+707.17 KB/s from 100 messages
+	Message size mean: 70.09 KB min: 69.76 KB max: 70.53 KB
+707.17 KB/s from 100 messages
+	Message size mean: 70.09 KB min: 69.76 KB max: 70.53 KB
+707.47 KB/s from 100 messages
+	Message size mean: 70.09 KB min: 69.76 KB max: 70.53 KB
+707.13 KB/s from 100 messages
+	Message size mean: 70.09 KB min: 69.72 KB max: 70.53 KB
+707.28 KB/s from 100 messages
+	Message size mean: 70.10 KB min: 69.72 KB max: 70.53 KB
+707.13 KB/s from 100 messages
+	Message size mean: 70.09 KB min: 69.72 KB max: 70.53 KB
+707.34 KB/s from 100 messages
+	Message size mean: 70.10 KB min: 69.72 KB max: 70.53 KB
+707.83 KB/s from 100 messages
+	Message size mean: 70.11 KB min: 69.72 KB max: 70.56 KB
+707.21 KB/s from 100 messages
+	Message size mean: 70.12 KB min: 69.72 KB max: 70.56 KB
+--- /camera/demo/compressed ---
+WARNING: topic [/camera/demo/compressed] does not appear to be published yet
+--- /detections ---
+Subscribed to [/detections]
+40 B/s from 2 messages
+	Message size mean: 32 B min: 32 B max: 32 B
+49 B/s from 4 messages
+	Message size mean: 32 B min: 32 B max: 32 B
+36 B/s from 4 messages
+	Message size mean: 32 B min: 32 B max: 32 B
+35 B/s from 5 messages
+	Message size mean: 32 B min: 32 B max: 32 B
+114 B/s from 6 messages
+	Message size mean: 106 B min: 32 B max: 476 B
+101 B/s from 7 messages
+	Message size mean: 95 B min: 32 B max: 476 B
+88 B/s from 7 messages
+	Message size mean: 95 B min: 32 B max: 476 B
+81 B/s from 8 messages
+	Message size mean: 88 B min: 32 B max: 476 B
+73 B/s from 8 messages
+	Message size mean: 88 B min: 32 B max: 476 B
+69 B/s from 9 messages
+	Message size mean: 81 B min: 32 B max: 476 B
+66 B/s from 10 messages
+	Message size mean: 76 B min: 32 B max: 476 B
+63 B/s from 11 messages
+	Message size mean: 72 B min: 32 B max: 476 B
+61 B/s from 12 messages
+	Message size mean: 69 B min: 32 B max: 476 B
+57 B/s from 12 messages
+	Message size mean: 69 B min: 32 B max: 476 B
+55 B/s from 13 messages
+	Message size mean: 66 B min: 32 B max: 476 B
+52 B/s from 13 messages
+	Message size mean: 66 B min: 32 B max: 476 B
+128 B/s from 15 messages
+	Message size mean: 150 B min: 32 B max: 916 B
+171 B/s from 16 messages
+	Message size mean: 198 B min: 32 B max: 924 B
+186 B/s from 17 messages
+	Message size mean: 215 B min: 32 B max: 924 B
+177 B/s from 17 messages
+	Message size mean: 215 B min: 32 B max: 924 B
+191 B/s from 18 messages
+	Message size mean: 229 B min: 32 B max: 924 B
+204 B/s from 19 messages
+	Message size mean: 242 B min: 32 B max: 924 B
+234 B/s from 20 messages
+	Message size mean: 276 B min: 32 B max: 924 B
+245 B/s from 22 messages
+	Message size mean: 274 B min: 32 B max: 924 B
+237 B/s from 23 messages
+	Message size mean: 263 B min: 32 B max: 924 B
+228 B/s from 23 messages
+	Message size mean: 263 B min: 32 B max: 924 B
+221 B/s from 24 messages
+	Message size mean: 254 B min: 32 B max: 924 B
+213 B/s from 24 messages
+	Message size mean: 254 B min: 32 B max: 924 B
+238 B/s from 26 messages
+	Message size mean: 271 B min: 32 B max: 924 B
+246 B/s from 27 messages
+	Message size mean: 279 B min: 32 B max: 924 B
+253 B/s from 28 messages
+	Message size mean: 286 B min: 32 B max: 924 B
+260 B/s from 29 messages
+	Message size mean: 292 B min: 32 B max: 924 B
+266 B/s from 30 messages
+	Message size mean: 298 B min: 32 B max: 924 B
+260 B/s from 31 messages
+	Message size mean: 290 B min: 32 B max: 924 B
+253 B/s from 32 messages
+	Message size mean: 282 B min: 32 B max: 924 B
+247 B/s from 33 messages
+	Message size mean: 274 B min: 32 B max: 924 B
+241 B/s from 34 messages
+	Message size mean: 267 B min: 32 B max: 924 B
+235 B/s from 34 messages
+	Message size mean: 267 B min: 32 B max: 924 B
+230 B/s from 35 messages
+	Message size mean: 260 B min: 32 B max: 924 B
+225 B/s from 36 messages
+	Message size mean: 254 B min: 32 B max: 924 B
+221 B/s from 38 messages
+	Message size mean: 242 B min: 32 B max: 924 B
+217 B/s from 39 messages
+	Message size mean: 237 B min: 32 B max: 924 B
+213 B/s from 40 messages
+	Message size mean: 232 B min: 32 B max: 924 B
+209 B/s from 41 messages
+	Message size mean: 227 B min: 32 B max: 924 B
+204 B/s from 41 messages
+	Message size mean: 227 B min: 32 B max: 924 B
+200 B/s from 42 messages
+	Message size mean: 222 B min: 32 B max: 924 B
+197 B/s from 43 messages
+	Message size mean: 218 B min: 32 B max: 924 B
+193 B/s from 43 messages
+	Message size mean: 218 B min: 32 B max: 924 B
+189 B/s from 43 messages
+	Message size mean: 218 B min: 32 B max: 924 B
+186 B/s from 45 messages
+	Message size mean: 210 B min: 32 B max: 924 B
+183 B/s from 46 messages
+	Message size mean: 206 B min: 32 B max: 924 B
+180 B/s from 47 messages
+	Message size mean: 202 B min: 32 B max: 924 B
+178 B/s from 48 messages
+	Message size mean: 198 B min: 32 B max: 924 B
+175 B/s from 49 messages
+	Message size mean: 195 B min: 32 B max: 924 B
+172 B/s from 50 messages
+	Message size mean: 192 B min: 32 B max: 924 B
+170 B/s from 51 messages
+	Message size mean: 189 B min: 32 B max: 924 B
+168 B/s from 52 messages
+	Message size mean: 186 B min: 32 B max: 924 B
+165 B/s from 53 messages
+	Message size mean: 183 B min: 32 B max: 924 B
+163 B/s from 54 messages
+	Message size mean: 180 B min: 32 B max: 924 B
+161 B/s from 55 messages
+	Message size mean: 177 B min: 32 B max: 924 B
+--- /scan ---
+Subscribed to [/scan]
+44.90 KB/s from 6 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+39.35 KB/s from 16 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+38.26 KB/s from 26 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.80 KB/s from 36 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.54 KB/s from 46 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.38 KB/s from 56 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.26 KB/s from 66 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.18 KB/s from 76 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.12 KB/s from 86 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.07 KB/s from 96 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.99 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.95 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.29 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.26 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.24 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.21 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.18 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.13 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.11 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.07 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.04 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.02 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.99 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.95 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.91 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.26 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.24 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.22 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.19 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.16 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.13 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.10 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.08 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.06 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.03 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.98 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.96 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.93 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.26 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.24 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.22 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.19 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.17 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.15 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.12 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.08 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.05 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.01 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.00 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.98 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.95 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.92 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+36.90 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.24 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.23 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.19 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.17 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.14 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.11 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.09 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB
+37.06 KB/s from 100 messages
+	Message size mean: 3.66 KB min: 3.66 KB max: 3.66 KB

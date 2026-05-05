@@ -1,0 +1,14 @@
+stdin is not a terminal device. Keyboard handling disabled.[INFO] [1776534235.643921192] [rosbag2_recorder]: Press SPACE for pausing/resuming
+[INFO] [1776534235.644992854] [rosbag2_storage]: Opened database 'g11_odom_bag/g11_odom_bag_0.db3' for READ_WRITE.
+[INFO] [1776534235.645415364] [rosbag2_recorder]: Listening for topics...
+[INFO] [1776534235.645426864] [rosbag2_recorder]: Event publisher thread: Starting
+[INFO] [1776534235.645500194] [rosbag2_recorder]: Recording...
+[INFO] [1776534237.258174033] [rosbag2_recorder]: Subscribed to topic '/imu'
+[INFO] [1776534237.869667392] [rosbag2_recorder]: Subscribed to topic '/odom'
+[INFO] [1776534237.974454201] [rosbag2_recorder]: Subscribed to topic '/odom_raw'
+[INFO] [1776534237.974498631] [rosbag2_recorder]: All requested topics are subscribed. Stopping discovery...
+[INFO] [1776534547.604052990] [rosbag2_cpp]: Writing remaining messages from cache to the bag. It may take a while
+[INFO] [1776534547.605327490] [rosbag2_storage]: Opened database 'g11_odom_bag/g11_odom_bag_1.db3' for READ_WRITE.
+[INFO] [1776534723.327330447] [rosbag2_cpp]: Writing remaining messages from cache to the bag. It may take a while
+[INFO] [1776534723.328168258] [rosbag2_recorder]: Event publisher thread: Exiting
+[INFO] [1776534723.328225978] [rosbag2_recorder]: Recording stopped

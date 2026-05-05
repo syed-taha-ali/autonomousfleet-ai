@@ -1,0 +1,180 @@
+=== N=1 trial=1 21:52:40 ===
+
+=== Exploration benchmark: 1 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 4.5%
+  Elapsed: 435s
+  Final state: done
+
+CSV saved: /tmp/g10_t1_n1/explore_benchmark.csv
+Plot saved: /tmp/g10_t1_n1/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=2 trial=1 21:53:26 ===
+
+=== Exploration benchmark: 2 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 4.4%
+  Elapsed: 481s
+  Final state: done
+
+CSV saved: /tmp/g10_t1_n2/explore_benchmark.csv
+Plot saved: /tmp/g10_t1_n2/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=3 trial=1 21:54:12 ===
+
+=== Exploration benchmark: 3 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 5.5%
+  Elapsed: 527s
+  Final state: done
+
+CSV saved: /tmp/g10_t1_n3/explore_benchmark.csv
+Plot saved: /tmp/g10_t1_n3/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=5 trial=1 21:54:58 ===
+
+=== Exploration benchmark: 5 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 5.5%
+  Elapsed: 573s
+  Final state: done
+
+CSV saved: /tmp/g10_t1_n5/explore_benchmark.csv
+Plot saved: /tmp/g10_t1_n5/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=1 trial=2 21:55:44 ===
+
+=== Exploration benchmark: 1 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 4.4%
+  Elapsed: 619s
+  Final state: done
+
+CSV saved: /tmp/g10_t2_n1/explore_benchmark.csv
+Plot saved: /tmp/g10_t2_n1/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=2 trial=2 21:56:30 ===
+
+=== Exploration benchmark: 2 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 4.5%
+  Elapsed: 665s
+  Final state: done
+
+CSV saved: /tmp/g10_t2_n2/explore_benchmark.csv
+Plot saved: /tmp/g10_t2_n2/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=3 trial=2 21:57:17 ===
+
+=== Exploration benchmark: 3 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 5.4%
+  Elapsed: 711s
+  Final state: done
+
+CSV saved: /tmp/g10_t2_n3/explore_benchmark.csv
+Plot saved: /tmp/g10_t2_n3/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=5 trial=2 21:58:03 ===
+
+=== Exploration benchmark: 5 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 5.6%
+  Elapsed: 757s
+  Final state: done
+
+CSV saved: /tmp/g10_t2_n5/explore_benchmark.csv
+Plot saved: /tmp/g10_t2_n5/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=1 trial=3 21:58:49 ===
+
+=== Exploration benchmark: 1 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 4.6%
+  Elapsed: 804s
+  Final state: done
+
+CSV saved: /tmp/g10_t3_n1/explore_benchmark.csv
+Plot saved: /tmp/g10_t3_n1/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=2 trial=3 21:59:35 ===
+
+=== Exploration benchmark: 2 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 4.5%
+  Elapsed: 850s
+  Final state: done
+
+CSV saved: /tmp/g10_t3_n2/explore_benchmark.csv
+Plot saved: /tmp/g10_t3_n2/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=3 trial=3 22:00:21 ===
+
+=== Exploration benchmark: 3 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 5.3%
+  Elapsed: 896s
+  Final state: done
+
+CSV saved: /tmp/g10_t3_n3/explore_benchmark.csv
+Plot saved: /tmp/g10_t3_n3/explore_benchmark.png
+
+Exploration benchmark complete.
+=== N=5 trial=3 22:01:07 ===
+
+=== Exploration benchmark: 5 robot(s) ===
+  Running for up to 600s...
+  Mission completed: done
+  Collected 1 samples
+  Objects: 2/5
+  Coverage: 5.6%
+  Elapsed: 942s
+  Final state: done
+
+CSV saved: /tmp/g10_t3_n5/explore_benchmark.csv
+Plot saved: /tmp/g10_t3_n5/explore_benchmark.png
+
+Exploration benchmark complete.
